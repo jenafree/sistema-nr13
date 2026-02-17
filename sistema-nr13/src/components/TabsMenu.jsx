@@ -43,6 +43,12 @@ export default function TabsMenu({ activeTab, setActiveTab, formData }) {
     if (tabId === "responsabilidades") {
       return formData.plhNome || formData.plhTituloProfissional || formData.plhCrea;
     }
+    if (tabId === "exameDocumentacao") {
+      return formData.prontuarioStatus || formData.registroSegurancaStatus || 
+             formData.relatorioAnteriorStatus || formData.parStatus || 
+             formData.certificadoCalibracaoStatus || formData.testeHidrostaticoStatus ||
+             formData.manualOperacaoStatus;
+    }
     // Outras abas ainda não têm conteúdo
     return false;
   };

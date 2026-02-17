@@ -95,7 +95,23 @@ function App() {
       // Informações do Vaso - Código de Projeto
       codigoProjeto: "",
       // Informações do Vaso - Tipo selecionado
-      tipoVasoSelecionado: "casco"
+      tipoVasoSelecionado: "casco",
+      // Exame da Documentação
+      prontuarioStatus: "",
+      prontuarioTipo: "",
+      prontuarioAno: "",
+      registroSegurancaStatus: "",
+      registroSegurancaTipo: "",
+      registroSegurancaAno: "",
+      relatorioAnteriorStatus: "",
+      relatorioAnteriorTipo: "",
+      relatorioAnteriorNumero: "",
+      parStatus: "",
+      certificadoCalibracaoStatus: "",
+      testeHidrostaticoStatus: "",
+      testeHidrostaticoTipo: "",
+      testeHidrostaticoExecutadoPor: "",
+      manualOperacaoStatus: ""
     };
   });
 

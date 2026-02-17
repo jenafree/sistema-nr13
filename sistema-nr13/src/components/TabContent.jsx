@@ -4,6 +4,7 @@ import DadosContratante from "./DadosContratante";
 import Responsabilidades from "./Responsabilidades";
 import InformacoesVaso from "./InformacoesVaso";
 import ReferenciasNormativas from "./ReferenciasNormativas";
+import ExameDocumentacao from "./ExameDocumentacao";
 import "../styles/tab-resumo.css";
 
 export default function TabContent({ activeTab, formData, setFormData, setActiveTab }) {
@@ -48,10 +49,10 @@ export default function TabContent({ activeTab, formData, setFormData, setActive
       
       case "exameDocumentacao":
         return (
-          <div className="tab-content-placeholder">
-            <h3>Exame da Documentação</h3>
-            <p>Conteúdo a ser desenvolvido nesta aba.</p>
-          </div>
+          <ExameDocumentacao
+            formData={formData}
+            setFormData={setFormData}
+          />
         );
       
       case "relatorioAnterior":
