@@ -30,36 +30,6 @@ export default function Formulario({ formData, setFormData }) {
         </div>
 
         <div className="form-group">
-          <label htmlFor="cliente">Cliente *</label>
-          <input
-            id="cliente"
-            name="cliente"
-            type="text"
-            placeholder="Digite o nome do cliente"
-            value={formData.cliente}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="endereco">Endereço *</label>
-          <input
-            id="endereco"
-            name="endereco"
-            type="text"
-            placeholder="Digite o endereço completo"
-            value={formData.endereco}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="form-section-divider">
-          <h3>Dados do Equipamento</h3>
-        </div>
-
-        <div className="form-group">
           <label htmlFor="equipamento">Equipamento *</label>
           <input
             id="equipamento"
@@ -143,6 +113,105 @@ export default function Formulario({ formData, setFormData }) {
             </select>
           </div>
 
+          <div className="form-section-divider">
+          <h3>Tipo de inspeção:</h3>
+        </div>
+        <label htmlFor="tipo">Tipo *</label>
+            <select>
+              <option value="">Selecione o tipo</option>
+              <option value="Vertical">Inicial</option>
+              <option value="Horizontal">Periódica Externa</option>
+              <option value="Vertical">Periódica Externa e Interna</option>
+              <option value="Horizontal">Extraordinária</option>
+            </select>
+
+        <div className="form-section-divider">
+          <h3>Local de instalação:</h3>
+        </div>
+        <label htmlfor="tipo">Local *</label>
+        <input
+        type='text'
+        placeholder="Ex: CL67124"
+        value={formData.local}
+        onChange={handleChange}
+        required
+        />
+        
+        
+
+        <div className="form-section-divider">
+          <h3>Data da inspeção:</h3>
+        </div>
+
+        
+        <div className="form-group">
+          <label htmlFor="cliente">Início:</label>
+          <input
+            id="cliente"
+            name="cliente"
+            type="text"
+            placeholder="Data de Início da Atividade"
+            value={formData.cliente}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+
+        <div className="form-group">
+          <label htmlFor="cliente">Fim:</label>
+          <input
+            id="cliente"
+            name="cliente"
+            type="text"e
+            placeholder="Data do fim da Atividade"
+            value={formData.clinte}
+            onChange={handleChange}
+            required
+          />
+          <div className="form-section-divider">
+          
+        </div>
+
+        <div className="contato">
+          <p>engenharia@souzaaquino.com</p>
+          <p>(62) 99271-3016 | (62) 99955-0942</p>
+        </div>
+
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="cliente">Cliente *</label>
+          <input
+            id="cliente"
+            name="cliente"
+            type="text"
+            placeholder="Digite o nome do cliente"
+            value={formData.cliente}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="endereco">Endereço *</label>
+          <input
+            id="endereco"
+            name="endereco"
+            type="text"
+            placeholder="Digite o endereço completo"
+            value={formData.endereco}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        
+
+        
+
+        
+
           <div className="form-group">
             <label htmlFor="pmta">PMTA (Pressão Máxima de Trabalho Admissível) *</label>
             <input
@@ -154,34 +223,6 @@ export default function Formulario({ formData, setFormData }) {
               onChange={handleChange}
               required
             />
-          </div>
-        </div>
-
-        <div className="form-group">
-          <label>Tipo de Inspeção *</label>
-          <div className="radio-group">
-            <label className="radio-label">
-              <input
-                type="radio"
-                name="tipoInspecao"
-                value="Inicial"
-                checked={formData.tipoInspecao === "Inicial"}
-                onChange={handleChange}
-                required
-              />
-              <span>Inicial</span>
-            </label>
-            <label className="radio-label">
-              <input
-                type="radio"
-                name="tipoInspecao"
-                value="Periódica Externa"
-                checked={formData.tipoInspecao === "Periódica Externa"}
-                onChange={handleChange}
-                required
-              />
-              <span>Periódica Externa</span>
-            </label>
           </div>
         </div>
 
