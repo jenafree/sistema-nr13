@@ -43,7 +43,11 @@ function App() {
       cep: "",
       endereco: "",
       cidade: "",
-      estado: ""
+      estado: "",
+      // Responsabilidades
+      plhNome: "",
+      plhTituloProfissional: "",
+      plhCrea: ""
     };
   });
 
@@ -240,7 +244,18 @@ function App() {
                     dataInicio: "",
                     dataFim: "",
                     pmta: "",
-                    imagemEquipamento: ""
+                    imagemEquipamento: "",
+                    // Dados do Contratante
+                    razaoSocial: "",
+                    cnpj: "",
+                    cep: "",
+                    endereco: "",
+                    cidade: "",
+                    estado: "",
+                    // Responsabilidades
+                    plhNome: "",
+                    plhTituloProfissional: "",
+                    plhCrea: ""
                   };
                   setFormData(emptyData);
                   localStorage.removeItem('autosave_nr13');
