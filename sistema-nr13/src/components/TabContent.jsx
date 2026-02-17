@@ -2,6 +2,7 @@ import React from "react";
 import Formulario from "./Formulario";
 import DadosContratante from "./DadosContratante";
 import Responsabilidades from "./Responsabilidades";
+import ReferenciasNormativas from "./ReferenciasNormativas";
 import "../styles/tab-resumo.css";
 
 export default function TabContent({ activeTab, formData, setFormData, setActiveTab }) {
@@ -41,10 +42,7 @@ export default function TabContent({ activeTab, formData, setFormData, setActive
       
       case "referencias":
         return (
-          <div className="tab-content-placeholder">
-            <h3>Referências Normativas</h3>
-            <p>Conteúdo a ser desenvolvido nesta aba.</p>
-          </div>
+          <ReferenciasNormativas />
         );
       
       case "exameDocumentacao":
