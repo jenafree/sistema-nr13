@@ -174,22 +174,20 @@ export const RelatorioPDF = ({ dados }) => (
         </Text>
       </View>
 
-      {/* Cliente */}
-      <View style={styles.section}>
-        <Text style={styles.label}>Cliente:</Text>
-        <Text style={styles.value}>{dados.cliente || "-"}</Text>
-
-        <Text style={styles.label}>Endereço:</Text>
-        <Text style={styles.value}>{dados.endereco || "-"}</Text>
-      </View>
-
       {/* Dados do Equipamento */}
       <View style={styles.section}>
         <View style={styles.equipmentSection}>
           <View style={styles.equipmentImage}>
-            <Text style={{ fontSize: 8, color: "#999", textAlign: "center", marginTop: 60 }}>
-              [Imagem do Equipamento]
-            </Text>
+            {dados.imagemEquipamento ? (
+              <Image 
+                src={dados.imagemEquipamento} 
+                style={{ width: '100%', height: '100%' }}
+              />
+            ) : (
+              <Text style={{ fontSize: 8, color: "#999", textAlign: "center", marginTop: 60 }}>
+                [Imagem do Equipamento]
+              </Text>
+            )}
           </View>
           <View style={styles.equipmentData}>
             <Text style={styles.label}>Equipamento:</Text>
@@ -203,9 +201,7 @@ export const RelatorioPDF = ({ dados }) => (
 
             <Text style={styles.label}>Ano de Fabricação:</Text>
             <Text style={styles.value}>
-              {dados.anoFabricacao 
-                ? new Date(dados.anoFabricacao).getFullYear() 
-                : "-"}
+              {dados.anoFabricacao || "-"}
             </Text>
 
             <Text style={styles.label}>TAG:</Text>
@@ -234,11 +230,6 @@ export const RelatorioPDF = ({ dados }) => (
         </Text>
       </View>
 
-      {/* Parecer Técnico */}
-      <View style={styles.section}>
-        <Text style={styles.label}>Parecer Técnico:</Text>
-        <Text style={styles.value}>{dados.parecer || "-"}</Text>
-      </View>
     </Page>
   </Document>
 );

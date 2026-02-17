@@ -1,0 +1,63 @@
+╔════════════════════════════════════════════════════════════════╗
+║                                                                ║
+║     🚀 BEM-VINDO AO PROJETO, LUIZ FELIPE!                     ║
+║                                                                ║
+║     Sistema NR-13 - Relatório Técnico de Inspeção             ║
+║                                                                ║
+╚════════════════════════════════════════════════════════════════╝
+
+
+📋 ARQUIVOS QUE VOCÊ PRECISA LER (NESSA ORDEM):
+
+1. 👉 HANDOFF.md          ← COMECE POR AQUI! (guia passo a passo)
+2.    README.md           ← Visão geral do projeto
+3.    ROADMAP.md          ← Todas as tarefas futuras
+4.    CHANGELOG.md        ← O que já foi feito
+
+
+🎯 SEU PRIMEIRO TRABALHO:
+
+Fazer a aba "Dados do Contratante"
+→ Está tudo explicado no HANDOFF.md
+
+
+⚡ COMANDOS RÁPIDOS:
+
+cd "D:\SitemaNR13\sistema nr-13\sistema-nr13"
+npm install
+npm run dev
+
+→ Abre em: http://localhost:5173
+
+
+✅ STATUS DO PROJETO:
+
+[████████░░░░░░░░░░░░] 35% completo
+
+✅ Core completo (estrutura, formulário, PDF, auto-save)
+📋 13 abas faltando (seu trabalho!)
+
+
+🆘 TEM DÚVIDA?
+
+1. Leia o HANDOFF.md (tem TUDO explicado)
+2. Olhe o código de Formulario.jsx (exemplo perfeito)
+3. Pergunte pro Neftali se travar
+
+
+💪 VOCÊ CONSEGUE!
+
+O projeto está 100% funcional e bem documentado.
+Só seguir o padrão que já existe.
+
+Boa sorte! 🚀
+
+
+═══════════════════════════════════════════════════════════════
+
+Desenvolvedor anterior: Neftali
+Data de handoff: 17/02/2026
+Branch: core (completa)
+
+═══════════════════════════════════════════════════════════════
+
