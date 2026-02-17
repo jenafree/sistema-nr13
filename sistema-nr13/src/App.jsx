@@ -47,7 +47,55 @@ function App() {
       // Responsabilidades
       plhNome: "",
       plhTituloProfissional: "",
-      plhCrea: ""
+      plhCrea: "",
+      // Informações do Vaso - Dados Operacionais CASCO
+      fluidoCasco: "",
+      volumeInformadoCasco: "",
+      pressaoProjetoCasco: "",
+      pmtaCasco: "",
+      limitadaCasco: "",
+      pmeaCasco: "",
+      limitadaPmeaCasco: "",
+      pressaoOperacaoCasco: "",
+      pressaoTesteCasco: "",
+      temperaturaProjetoCasco: "",
+      temperaturaOperacaoCasco: "",
+      // Informações do Vaso - Dados Operacionais TUBOS/CALANDRA
+      fluidoTubos: "",
+      volumeCalculadoTubos: "",
+      pressaoProjetoTubos: "",
+      pmtaTubos: "",
+      limitadaTubos: "",
+      pmeaTubos: "",
+      limitadaPmeaTubos: "",
+      pressaoOperacaoTubos: "",
+      pressaoTesteTubos: "",
+      temperaturaProjetoTubos: "",
+      temperaturaOperacaoTubos: "",
+      // Informações do Vaso - Características Construtivas CASCO
+      diametroInternoCasco: "",
+      alturaComprimentoCasco: "",
+      pinturaExternaCasco: "",
+      materialCasco: "",
+      // Informações do Vaso - Características Construtivas TUBOS
+      diametroTubos: "",
+      alturaComprimentoTubos: "",
+      quantidadeTubos: "",
+      superficieTrocaTubos: "",
+      // Informações do Vaso - Classificação NR13 CASCO
+      pvCasco: "",
+      classeFluidoCasco: "",
+      grupoRiscoCasco: "",
+      categoriaCasco: "",
+      // Informações do Vaso - Classificação NR13 TUBOS
+      pvTubos: "",
+      classeFluidoTubos: "",
+      grupoRiscoTubos: "",
+      categoriaTubos: "",
+      // Informações do Vaso - Código de Projeto
+      codigoProjeto: "",
+      // Informações do Vaso - Tipo selecionado
+      tipoVasoSelecionado: "casco"
     };
   });
 
