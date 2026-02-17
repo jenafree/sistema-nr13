@@ -3,6 +3,7 @@ import Formulario from "./Formulario";
 import DadosContratante from "./DadosContratante";
 import Responsabilidades from "./Responsabilidades";
 import InformacoesVaso from "./InformacoesVaso";
+import ReferenciasNormativas from "./ReferenciasNormativas";
 import "../styles/tab-resumo.css";
 
 export default function TabContent({ activeTab, formData, setFormData, setActiveTab }) {
