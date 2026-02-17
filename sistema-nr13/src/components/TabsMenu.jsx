@@ -23,13 +23,25 @@ export default function TabsMenu({ activeTab, setActiveTab, formData }) {
   
   // Verificar se a aba tem conteúdo preenchido
   const hasContent = (tabId) => {
-    if (tabId === "resumo" || tabId === "informacoesVaso") {
+    if (tabId === "resumo") {
       // Verificar campos principais
-      return formData.equipamento || formData.fabricante || formData.numeroSerie;
+      return formData.equipamento || formData.fabricante || formData.numeroSerie || formData.tag || formData.tipo || formData.pmta || formData.tipoInspecao || formData.local || formData.dataInicio || formData.dataFim || formData.imagemEquipamento;
+    }
+    if (tabId === "informacoesVaso") {
+      // Verifica campos de CASCO ou TUBOS
+      return formData.fluidoCasco || formData.volumeInformadoCasco || formData.pressaoProjetoCasco || 
+             formData.pmtaCasco || formData.diametroInternoCasco || formData.materialCasco || 
+             formData.pvCasco || formData.classeFluidoCasco || formData.codigoProjeto ||
+             formData.fluidoTubos || formData.volumeCalculadoTubos || formData.pressaoProjetoTubos ||
+             formData.pmtaTubos || formData.diametroTubos || formData.quantidadeTubos ||
+             formData.pvTubos || formData.classeFluidoTubos;
     }
     if (tabId === "dadosContratante") {
       // Verificar campos do contratante
-      return formData.razaoSocial || formData.cnpj || formData.endereco;
+      return formData.razaoSocial || formData.cnpj || formData.endereco || formData.cep || formData.cidade || formData.estado;
+    }
+    if (tabId === "responsabilidades") {
+      return formData.plhNome || formData.plhTituloProfissional || formData.plhCrea;
     }
     // Outras abas ainda não têm conteúdo
     return false;

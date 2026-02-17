@@ -2,7 +2,7 @@ import React from "react";
 import Formulario from "./Formulario";
 import DadosContratante from "./DadosContratante";
 import Responsabilidades from "./Responsabilidades";
-import ReferenciasNormativas from "./ReferenciasNormativas";
+import InformacoesVaso from "./InformacoesVaso";
 import "../styles/tab-resumo.css";
 
 export default function TabContent({ activeTab, formData, setFormData, setActiveTab }) {
@@ -18,7 +18,7 @@ export default function TabContent({ activeTab, formData, setFormData, setActive
       
       case "informacoesVaso":
         return (
-          <Formulario
+          <InformacoesVaso
             formData={formData}
             setFormData={setFormData}
           />
