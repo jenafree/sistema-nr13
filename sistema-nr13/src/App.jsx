@@ -36,7 +36,14 @@ function App() {
       dataInicio: "",
       dataFim: "",
       pmta: "",
-      imagemEquipamento: ""
+      imagemEquipamento: "",
+      // Dados do Contratante
+      razaoSocial: "",
+      cnpj: "",
+      cep: "",
+      endereco: "",
+      cidade: "",
+      estado: ""
     };
   });
 

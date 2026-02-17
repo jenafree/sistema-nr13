@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "git:flow": "powershell -ExecutionPolicy Bypass -File ./git-flow.ps1",
+    "git:flow:bat": "git-flow.bat"
   },
   "dependencies": {
     "@react-pdf/renderer": "^4.3.2",

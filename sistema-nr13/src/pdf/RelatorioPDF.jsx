@@ -174,6 +174,31 @@ export const RelatorioPDF = ({ dados }) => (
         </Text>
       </View>
 
+      {/* Dados do Contratante */}
+      <View style={styles.section}>
+        <Text style={styles.label}>1. DADOS DO CONTRATANTE</Text>
+        <View style={{ backgroundColor: "#f0f0f0", padding: 8, marginTop: 5, marginBottom: 10 }}>
+          <Text style={{ fontSize: 9, fontWeight: "bold" }}>CLIENTE</Text>
+        </View>
+        <Text style={styles.label}>Razão social:</Text>
+        <Text style={styles.value}>{dados.razaoSocial || "-"}</Text>
+
+        <Text style={styles.label}>CNPJ:</Text>
+        <Text style={styles.value}>{dados.cnpj || "-"}</Text>
+
+        <Text style={styles.label}>CEP:</Text>
+        <Text style={styles.value}>{dados.cep || "-"}</Text>
+
+        <Text style={styles.label}>Endereço:</Text>
+        <Text style={styles.value}>{dados.endereco || "-"}</Text>
+
+        <Text style={styles.label}>Cidade:</Text>
+        <Text style={styles.value}>{dados.cidade || "-"}</Text>
+
+        <Text style={styles.label}>Estado:</Text>
+        <Text style={styles.value}>{dados.estado || "-"}</Text>
+      </View>
+
       {/* Dados do Equipamento */}
       <View style={styles.section}>
         <View style={styles.equipmentSection}>

@@ -1,5 +1,6 @@
 import React from "react";
 import Formulario from "./Formulario";
+import DadosContratante from "./DadosContratante";
 import "../styles/tab-resumo.css";
 
 export default function TabContent({ activeTab, formData, setFormData, setActiveTab }) {
@@ -23,10 +24,10 @@ export default function TabContent({ activeTab, formData, setFormData, setActive
       
       case "dadosContratante":
         return (
-          <div className="tab-content-placeholder">
-            <h3>Dados do Contratante</h3>
-            <p>Conteúdo a ser desenvolvido nesta aba.</p>
-          </div>
+          <DadosContratante
+            formData={formData}
+            setFormData={setFormData}
+          />
         );
       
       case "responsabilidades":

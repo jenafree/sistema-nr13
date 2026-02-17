@@ -27,6 +27,10 @@ export default function TabsMenu({ activeTab, setActiveTab, formData }) {
       // Verificar campos principais
       return formData.equipamento || formData.fabricante || formData.numeroSerie;
     }
+    if (tabId === "dadosContratante") {
+      // Verificar campos do contratante
+      return formData.razaoSocial || formData.cnpj || formData.endereco;
+    }
     // Outras abas ainda não têm conteúdo
     return false;
   };
