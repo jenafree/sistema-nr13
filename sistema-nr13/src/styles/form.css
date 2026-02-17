@@ -499,3 +499,59 @@
     margin-top: 0;
   }
 }
+
+/* Referências normativas */
+.referencias-intro {
+  margin: 0 0 1.5rem 0;
+  font-size: 0.98rem;
+  color: #4b5563;
+}
+
+.referencias-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.referencia-card {
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.referencia-card:hover {
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+}
+
+.referencia-chip {
+  align-self: flex-start;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.referencia-titulo {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.referencia-detalhes {
+  margin: 0;
+  font-size: 0.92rem;
+  color: #4b5563;
+  line-height: 1.6;
+}
