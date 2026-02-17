@@ -36,7 +36,10 @@ function App() {
       dataInicio: "",
       dataFim: "",
       pmta: "",
-      imagemEquipamento: ""
+      imagemEquipamento: "",
+      plhNome: "",
+      plhTituloProfissional: "",
+      plhCrea: ""
     };
   });
 
@@ -233,7 +236,10 @@ function App() {
                     dataInicio: "",
                     dataFim: "",
                     pmta: "",
-                    imagemEquipamento: ""
+                    imagemEquipamento: "",
+                    plhNome: "",
+                    plhTituloProfissional: "",
+                    plhCrea: ""
                   };
                   setFormData(emptyData);
                   localStorage.removeItem('autosave_nr13');
