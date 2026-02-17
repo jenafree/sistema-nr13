@@ -111,7 +111,43 @@ function App() {
       testeHidrostaticoStatus: "",
       testeHidrostaticoTipo: "",
       testeHidrostaticoExecutadoPor: "",
-      manualOperacaoStatus: ""
+      manualOperacaoStatus: "",
+      // Informações Relevantes do Relatório Anterior
+      inspecaoPrazoStatus: "",
+      recomendacoesCumpridasStatus: "",
+      // Instalações
+      acessoSeguroStatus: "",
+      requisitosVasoStatus: "",
+      // Exame Externo
+      placaIdentificacaoStatus: "",
+      adesivoPinturaStatus: "",
+      // Exame Externo - 8.1 Registro Fotográfico
+      fotosExameExterno: [],
+      observacoesFotos: "",
+      // Exame Externo - 8.2 Dispositivo de Alívio de Pressão
+      dispositivoAlivioInstalacao: "",
+      descricaoSistemaAlivio: "",
+      tipoValvulaSeguranca: "",
+      bloqueioInadvertido: "",
+      aberturaPmta: "",
+      fabricanteValvula: "",
+      numeroSerieValvula: "",
+      tagValvula: "",
+      diametroConexaoValvula: "",
+      pressaoAjusteValvula: "",
+      numeroCertificadoValvula: "",
+      // Exame Externo - 8.2 Instrumento Indicador de Pressão
+      instrumentoPressaoInstalacao: "",
+      descricaoSistemaInstrumento: "",
+      bloqueioInadvertidoInstrumento: "",
+      aberturaPmtaInstrumento: "",
+      tipoInstrumentoPrincipal: "",
+      fabricanteInstrumento: "",
+      numeroSerieInstrumento: "",
+      tagInstrumento: "",
+      escalaInstrumento: "",
+      diametroMostradorInstrumento: "",
+      numeroCertificadoInstrumento: ""
     };
   });
 

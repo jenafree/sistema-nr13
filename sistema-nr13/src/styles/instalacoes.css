@@ -1,0 +1,72 @@
+/* Estilos específicos para Instalações */
+
+.question-block {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 2rem;
+}
+
+.question-text {
+  margin-bottom: 1.25rem;
+}
+
+.question-text p {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #334155;
+  line-height: 1.6;
+}
+
+.radio-options {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.radio-option:hover {
+  background-color: #f1f5f9;
+}
+
+.radio-option input[type="radio"] {
+  margin: 0;
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  accent-color: #3b82f6;
+}
+
+.radio-option span {
+  font-size: 0.95rem;
+  color: #334155;
+  user-select: none;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .question-block {
+    padding: 1rem;
+  }
+
+  .radio-options {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .radio-option {
+    width: 100%;
+  }
+}
+

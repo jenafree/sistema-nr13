@@ -5,6 +5,9 @@ import Responsabilidades from "./Responsabilidades";
 import InformacoesVaso from "./InformacoesVaso";
 import ReferenciasNormativas from "./ReferenciasNormativas";
 import ExameDocumentacao from "./ExameDocumentacao";
+import InformacoesRelatorioAnterior from "./InformacoesRelatorioAnterior";
+import Instalacoes from "./Instalacoes";
+import ExameExterno from "./ExameExterno";
 import "../styles/tab-resumo.css";
 
 export default function TabContent({ activeTab, formData, setFormData, setActiveTab }) {
@@ -57,26 +60,26 @@ export default function TabContent({ activeTab, formData, setFormData, setActive
       
       case "relatorioAnterior":
         return (
-          <div className="tab-content-placeholder">
-            <h3>Informações do Relatório Anterior</h3>
-            <p>Conteúdo a ser desenvolvido nesta aba.</p>
-          </div>
+          <InformacoesRelatorioAnterior
+            formData={formData}
+            setFormData={setFormData}
+          />
         );
       
       case "instalacoes":
         return (
-          <div className="tab-content-placeholder">
-            <h3>Instalações</h3>
-            <p>Conteúdo a ser desenvolvido nesta aba.</p>
-          </div>
+          <Instalacoes
+            formData={formData}
+            setFormData={setFormData}
+          />
         );
       
       case "exameExterno":
         return (
-          <div className="tab-content-placeholder">
-            <h3>Exame Externo</h3>
-            <p>Conteúdo a ser desenvolvido nesta aba.</p>
-          </div>
+          <ExameExterno
+            formData={formData}
+            setFormData={setFormData}
+          />
         );
       
       case "exameInterno":

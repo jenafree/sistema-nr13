@@ -49,6 +49,20 @@ export default function TabsMenu({ activeTab, setActiveTab, formData }) {
              formData.certificadoCalibracaoStatus || formData.testeHidrostaticoStatus ||
              formData.manualOperacaoStatus;
     }
+    if (tabId === "relatorioAnterior") {
+      return formData.inspecaoPrazoStatus || formData.recomendacoesCumpridasStatus;
+    }
+    if (tabId === "instalacoes") {
+      return formData.acessoSeguroStatus || formData.requisitosVasoStatus;
+    }
+    if (tabId === "exameExterno") {
+      return formData.placaIdentificacaoStatus || formData.adesivoPinturaStatus ||
+             (formData.fotosExameExterno && Array.isArray(formData.fotosExameExterno) && formData.fotosExameExterno.length > 0) ||
+             formData.observacoesFotos || formData.dispositivoAlivioInstalacao ||
+             formData.tipoValvulaSeguranca || formData.fabricanteValvula ||
+             formData.instrumentoPressaoInstalacao || formData.tipoInstrumentoPrincipal ||
+             formData.fabricanteInstrumento;
+    }
     // Outras abas ainda não têm conteúdo
     return false;
   };
