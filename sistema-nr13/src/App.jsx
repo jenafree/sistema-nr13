@@ -16,6 +16,7 @@ function App() {
     anoFabricacao: "",
     tag: "",
     tipo: "",
+    tipoInspecao: "",
     pmta: "",
     parecer: ""
   });
@@ -23,7 +24,13 @@ function App() {
   return (
     <div className="app-container">
       <header className="app-header">
-        <h1>SOUSA&AQUINO</h1>
+        <div className="logo-container">
+          <img 
+            src="/logo-souza-aquino.svg" 
+            alt="SOUZA&AQUINO Logo" 
+            className="logo-image"
+          />
+        </div>
         <p className="app-subtitle">Sistema de Relatórios NR-13</p>
       </header>
 

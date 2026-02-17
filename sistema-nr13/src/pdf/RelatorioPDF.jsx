@@ -1,5 +1,5 @@
 import React from "react";
-import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
+import { Page, Text, View, Document, StyleSheet, Image } from "@react-pdf/renderer";
 
 const styles = StyleSheet.create({
   page: {
@@ -24,19 +24,34 @@ const styles = StyleSheet.create({
   },
 
   logoContainer: {
+    width: 150,
+    minHeight: 90,
+    backgroundColor: "#1e3a8a",
+    borderRadius: 15,
+    padding: 12,
     flexDirection: "column",
-    alignItems: "flex-start"
+    justifyContent: "center",
+    alignItems: "center"
   },
 
   logoText: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: "bold",
-    marginBottom: 3
+    color: "#ffffff",
+    marginBottom: 2,
+    textAlign: "center"
+  },
+
+  logoAmpersand: {
+    fontSize: 18,
+    color: "#93c5fd"
   },
 
   logoSubtext: {
-    fontSize: 8,
-    color: "#333"
+    fontSize: 7,
+    color: "#ffffff",
+    textAlign: "center",
+    marginTop: 2
   },
 
   reportNumber: {
@@ -70,6 +85,23 @@ const styles = StyleSheet.create({
     padding: 10
   },
 
+  equipmentSection: {
+    flexDirection: "row",
+    marginBottom: 15
+  },
+
+  equipmentImage: {
+    width: 200,
+    height: 150,
+    marginRight: 15,
+    borderWidth: 1,
+    borderColor: "#ccc"
+  },
+
+  equipmentData: {
+    flex: 1
+  },
+
   label: {
     fontSize: 9,
     fontWeight: "bold",
@@ -80,6 +112,40 @@ const styles = StyleSheet.create({
   value: {
     fontSize: 10,
     marginBottom: 5
+  },
+
+  inspectionTypeSection: {
+    marginTop: 10,
+    marginBottom: 10
+  },
+
+  inspectionTypeLabel: {
+    fontSize: 9,
+    fontWeight: "bold",
+    marginBottom: 5
+  },
+
+  inspectionOption: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 3
+  },
+
+  checkbox: {
+    width: 10,
+    height: 10,
+    borderWidth: 1,
+    borderColor: "#000",
+    marginRight: 5,
+    backgroundColor: "#000"
+  },
+
+  checkboxEmpty: {
+    width: 10,
+    height: 10,
+    borderWidth: 1,
+    borderColor: "#000",
+    marginRight: 5
   }
 });
 
@@ -90,7 +156,9 @@ export const RelatorioPDF = ({ dados }) => (
       <View style={styles.header}>
         <View style={styles.headerTop}>
           <View style={styles.logoContainer}>
-            <Text style={styles.logoText}>SOUZA&AQUINO</Text>
+            <Text style={styles.logoText}>
+              SOUZA<Text style={styles.logoAmpersand}>&amp;</Text>AQUINO
+            </Text>
             <Text style={styles.logoSubtext}>MAESTRIA EM ENGENHARIA MECANICA</Text>
           </View>
           <Text style={styles.reportNumber}>
@@ -117,27 +185,48 @@ export const RelatorioPDF = ({ dados }) => (
 
       {/* Dados do Equipamento */}
       <View style={styles.section}>
-        <Text style={styles.label}>Equipamento:</Text>
-        <Text style={styles.value}>{dados.equipamento || "-"}</Text>
+        <View style={styles.equipmentSection}>
+          <View style={styles.equipmentImage}>
+            <Text style={{ fontSize: 8, color: "#999", textAlign: "center", marginTop: 60 }}>
+              [Imagem do Equipamento]
+            </Text>
+          </View>
+          <View style={styles.equipmentData}>
+            <Text style={styles.label}>Equipamento:</Text>
+            <Text style={styles.value}>{dados.equipamento || "-"}</Text>
 
-        <Text style={styles.label}>Fabricante:</Text>
-        <Text style={styles.value}>{dados.fabricante || "-"}</Text>
+            <Text style={styles.label}>Fabricante:</Text>
+            <Text style={styles.value}>{dados.fabricante || "-"}</Text>
 
-        <Text style={styles.label}>Nº de Série:</Text>
-        <Text style={styles.value}>{dados.numeroSerie || "-"}</Text>
+            <Text style={styles.label}>Nº de série:</Text>
+            <Text style={styles.value}>{dados.numeroSerie || "-"}</Text>
 
-        <Text style={styles.label}>Ano de Fabricação:</Text>
-        <Text style={styles.value}>
-          {dados.anoFabricacao 
-            ? new Date(dados.anoFabricacao).getFullYear() 
-            : "-"}
-        </Text>
+            <Text style={styles.label}>Ano de Fabricação:</Text>
+            <Text style={styles.value}>
+              {dados.anoFabricacao 
+                ? new Date(dados.anoFabricacao).getFullYear() 
+                : "-"}
+            </Text>
 
-        <Text style={styles.label}>TAG:</Text>
-        <Text style={styles.value}>{dados.tag || "-"}</Text>
+            <Text style={styles.label}>TAG:</Text>
+            <Text style={styles.value}>{dados.tag || "-"}</Text>
 
-        <Text style={styles.label}>Tipo:</Text>
-        <Text style={styles.value}>{dados.tipo || "-"}</Text>
+            <Text style={styles.label}>Tipo:</Text>
+            <Text style={styles.value}>{dados.tipo || "-"}</Text>
+          </View>
+        </View>
+
+        <View style={styles.inspectionTypeSection}>
+          <Text style={styles.inspectionTypeLabel}>TIPO DE INSPEÇÃO:</Text>
+          <View style={styles.inspectionOption}>
+            <View style={dados.tipoInspecao === "Inicial" ? styles.checkbox : styles.checkboxEmpty} />
+            <Text style={styles.value}>Inicial</Text>
+          </View>
+          <View style={styles.inspectionOption}>
+            <View style={dados.tipoInspecao === "Periódica Externa" ? styles.checkbox : styles.checkboxEmpty} />
+            <Text style={styles.value}>Periódica Externa</Text>
+          </View>
+        </View>
 
         <Text style={styles.label}>PMTA (Pressão Máxima de Trabalho Admissível):</Text>
         <Text style={styles.value}>

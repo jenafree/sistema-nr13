@@ -158,6 +158,34 @@ export default function Formulario({ formData, setFormData }) {
         </div>
 
         <div className="form-group">
+          <label>Tipo de Inspeção *</label>
+          <div className="radio-group">
+            <label className="radio-label">
+              <input
+                type="radio"
+                name="tipoInspecao"
+                value="Inicial"
+                checked={formData.tipoInspecao === "Inicial"}
+                onChange={handleChange}
+                required
+              />
+              <span>Inicial</span>
+            </label>
+            <label className="radio-label">
+              <input
+                type="radio"
+                name="tipoInspecao"
+                value="Periódica Externa"
+                checked={formData.tipoInspecao === "Periódica Externa"}
+                onChange={handleChange}
+                required
+              />
+              <span>Periódica Externa</span>
+            </label>
+          </div>
+        </div>
+
+        <div className="form-group">
           <label htmlFor="parecer">Parecer Técnico *</label>
           <textarea
             id="parecer"
