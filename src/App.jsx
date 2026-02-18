@@ -13,6 +13,8 @@ function App() {
   const [activeTab, setActiveTab] = useState("resumo");
   const [toast, setToast] = useState(null);
   const [pdfKey, setPdfKey] = useState(0);
+  const [isSaving, setIsSaving] = useState(false);
+  const saveTimeoutRef = useRef(null);
   
   // Recuperar dados salvos ao carregar
   const [formData, setFormData] = useState(() => {

@@ -123,3 +123,99 @@ export const validateFileType = (file, allowedTypes = ['image/jpeg', 'image/png'
   return { valid: true, message: "Tipo de arquivo válido" };
 };
 
+// Validar PMTA (Pressão Máxima de Trabalho Admissível)
+export const validatePMTA = (pmta) => {
+  if (!pmta) return { valid: false, message: "PMTA é obrigatória" };
+  
+  // Remove caracteres não numéricos (exceto vírgula e ponto)
+  const cleanPMTA = pmta.toString().replace(/[^\d,.]/g, '').replace(',', '.');
+  const numPMTA = parseFloat(cleanPMTA);
+  
+  if (isNaN(numPMTA)) {
+    return { valid: false, message: "PMTA deve ser um número válido" };
+  }
+  
+  if (numPMTA < 0) {
+    return { valid: false, message: "PMTA não pode ser negativa" };
+  }
+  
+  if (numPMTA > 1000) {
+    return { valid: false, message: "PMTA muito alta. Verifique o valor (máximo: 1000 kgf/cm²)" };
+  }
+  
+  return { valid: true, message: "PMTA válida", value: numPMTA };
+};
+
+// Validar data não futura
+export const validateDateNotFuture = (dateString) => {
+  if (!dateString) return { valid: true, message: "" }; // Data opcional
+  
+  const date = new Date(dateString);
+  const today = new Date();
+  today.setHours(23, 59, 59, 999); // Fim do dia de hoje
+  
+  if (date > today) {
+    return { valid: false, message: "Data não pode ser futura" };
+  }
+  
+  return { valid: true, message: "Data válida" };
+};
+
+// Validar ano de fabricação
+export const validateYear = (year) => {
+  if (!year) return { valid: true, message: "" }; // Ano opcional
+  
+  const currentYear = new Date().getFullYear();
+  const numYear = parseInt(year);
+  
+  if (isNaN(numYear)) {
+    return { valid: false, message: "Ano deve ser um número válido" };
+  }
+  
+  if (numYear < 1900) {
+    return { valid: false, message: "Ano muito antigo (mínimo: 1900)" };
+  }
+  
+  if (numYear > currentYear) {
+    return { valid: false, message: `Ano não pode ser futuro (máximo: ${currentYear})` };
+  }
+  
+  return { valid: true, message: "Ano válido" };
+};
+
+// Formatar PMTA
+export const formatPMTA = (value) => {
+  if (!value) return "";
+  const num = parseFloat(value.toString().replace(',', '.'));
+  if (isNaN(num)) return value;
+  return num.toFixed(2).replace('.', ',');
+};
+
+// Formatar CNPJ
+export const formatCNPJ = (cnpj) => {
+  if (!cnpj) return "";
+  const clean = cnpj.replace(/[^\d]/g, '');
+  if (clean.length !== 14) return cnpj;
+  return clean.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
+};
+
+// Formatar CEP
+export const formatCEP = (cep) => {
+  if (!cep) return "";
+  const clean = cep.replace(/[^\d]/g, '');
+  if (clean.length !== 8) return cep;
+  return clean.replace(/^(\d{5})(\d{3})$/, '$1-$2');
+};
+
+// Formatar CREA
+export const formatCREA = (crea) => {
+  if (!crea) return "";
+  const clean = crea.replace(/[^\d]/g, '');
+  if (clean.length <= 6) return clean;
+  // Formato: XXXXXX-D ou XX.XXX-X
+  if (clean.length === 7) {
+    return clean.replace(/^(\d{6})(\d{1})$/, '$1-$2');
+  }
+  return crea; // Retorna original se não se encaixar no padrão
+};
+
