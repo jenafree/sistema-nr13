@@ -8,6 +8,13 @@ import ExameDocumentacao from "./ExameDocumentacao";
 import InformacoesRelatorioAnterior from "./InformacoesRelatorioAnterior";
 import Instalacoes from "./Instalacoes";
 import ExameExterno from "./ExameExterno";
+import ExameInterno from "./ExameInterno";
+import EnsaiosRealizados from "./EnsaiosRealizados";
+import Recomendacoes from "./Recomendacoes";
+import Conclusao from "./Conclusao";
+import ProximasInspecoes from "./ProximasInspecoes";
+import Anexos from "./Anexos";
+import TermoInspecao from "./TermoInspecao";
 import "../styles/tab-resumo.css";
 
 export default function TabContent({ activeTab, formData, setFormData, setActiveTab }) {
@@ -16,6 +23,14 @@ export default function TabContent({ activeTab, formData, setFormData, setActive
       case "resumo":
         return (
           <Formulario
+            formData={formData}
+            setFormData={setFormData}
+          />
+        );
+      
+      case "termoInspecao":
+        return (
+          <TermoInspecao
             formData={formData}
             setFormData={setFormData}
           />
@@ -84,50 +99,50 @@ export default function TabContent({ activeTab, formData, setFormData, setActive
       
       case "exameInterno":
         return (
-          <div className="tab-content-placeholder">
-            <h3>Exame Interno</h3>
-            <p>Conteúdo a ser desenvolvido nesta aba.</p>
-          </div>
+          <ExameInterno
+            formData={formData}
+            setFormData={setFormData}
+          />
         );
       
       case "ensaios":
         return (
-          <div className="tab-content-placeholder">
-            <h3>Ensaios Realizados</h3>
-            <p>Conteúdo a ser desenvolvido nesta aba.</p>
-          </div>
+          <EnsaiosRealizados
+            formData={formData}
+            setFormData={setFormData}
+          />
         );
       
       case "recomendacoes":
         return (
-          <div className="tab-content-placeholder">
-            <h3>Recomendações e Providências Necessárias</h3>
-            <p>Conteúdo a ser desenvolvido nesta aba.</p>
-          </div>
+          <Recomendacoes
+            formData={formData}
+            setFormData={setFormData}
+          />
         );
       
       case "conclusao":
         return (
-          <div className="tab-content-placeholder">
-            <h3>Conclusão</h3>
-            <p>Conteúdo a ser desenvolvido nesta aba.</p>
-          </div>
+          <Conclusao
+            formData={formData}
+            setFormData={setFormData}
+          />
         );
       
       case "proximasInspecoes":
         return (
-          <div className="tab-content-placeholder">
-            <h3>Data das Próximas Inspeções</h3>
-            <p>Conteúdo a ser desenvolvido nesta aba.</p>
-          </div>
+          <ProximasInspecoes
+            formData={formData}
+            setFormData={setFormData}
+          />
         );
       
       case "anexos":
         return (
-          <div className="tab-content-placeholder">
-            <h3>Anexos</h3>
-            <p>Conteúdo a ser desenvolvido nesta aba.</p>
-          </div>
+          <Anexos
+            formData={formData}
+            setFormData={setFormData}
+          />
         );
       
       default:

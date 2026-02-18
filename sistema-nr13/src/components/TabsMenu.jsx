@@ -2,21 +2,22 @@ import React from "react";
 import "../styles/tabs.css";
 
 const tabs = [
-  { id: "resumo", label: "Resumo do Relatório", icon: "📋" },
-  { id: "dadosContratante", label: "Dados do Contratante", icon: "👤" },
-  { id: "responsabilidades", label: "Responsabilidades", icon: "📋" },
-  { id: "referencias", label: "Referências Normativas", icon: "📚" },
-  { id: "informacoesVaso", label: "Informações do Vaso", icon: "🏭" },
-  { id: "exameDocumentacao", label: "Exame da Documentação", icon: "📄" },
-  { id: "relatorioAnterior", label: "Relatório Anterior", icon: "📊" },
-  { id: "instalacoes", label: "Instalações", icon: "🔧" },
-  { id: "exameExterno", label: "Exame Externo", icon: "🔍" },
-  { id: "exameInterno", label: "Exame Interno", icon: "🔬" },
-  { id: "ensaios", label: "Ensaios Realizados", icon: "⚗️" },
-  { id: "recomendacoes", label: "Recomendações", icon: "💡" },
-  { id: "conclusao", label: "Conclusão", icon: "✅" },
-  { id: "proximasInspecoes", label: "Próximas Inspeções", icon: "📅" },
-  { id: "anexos", label: "Anexos", icon: "📎" }
+  { id: "resumo", label: "Resumo do Relatório", icon: "📋", number: 1 },
+  { id: "dadosContratante", label: "Dados do Contratante", icon: "👤", number: 2 },
+  { id: "responsabilidades", label: "Responsabilidades", icon: "📋", number: 3 },
+  { id: "referencias", label: "Referências Normativas", icon: "📚", number: 4 },
+  { id: "informacoesVaso", label: "Informações do Vaso", icon: "🏭", number: 5 },
+  { id: "exameDocumentacao", label: "Exame da Documentação", icon: "📄", number: 6 },
+  { id: "relatorioAnterior", label: "Relatório Anterior", icon: "📊", number: 7 },
+  { id: "instalacoes", label: "Instalações", icon: "🔧", number: 8 },
+  { id: "exameExterno", label: "Exame Externo", icon: "🔍", number: 9 },
+  { id: "exameInterno", label: "Exame Interno", icon: "🔬", number: 10 },
+  { id: "ensaios", label: "Ensaios Realizados", icon: "⚗️", number: 11 },
+  { id: "recomendacoes", label: "Recomendações", icon: "💡", number: 12 },
+  { id: "conclusao", label: "Conclusão", icon: "✅", number: 13 },
+  { id: "proximasInspecoes", label: "Próximas Inspeções", icon: "📅", number: 14 },
+  { id: "anexos", label: "Anexos", icon: "📎", number: 15 },
+  { id: "termoInspecao", label: "Termo de Inspeção", icon: "📜", number: 16 }
 ];
 
 export default function TabsMenu({ activeTab, setActiveTab, formData }) {
@@ -63,6 +64,39 @@ export default function TabsMenu({ activeTab, setActiveTab, formData }) {
              formData.instrumentoPressaoInstalacao || formData.tipoInstrumentoPrincipal ||
              formData.fabricanteInstrumento;
     }
+    if (tabId === "exameInterno") {
+      return formData.observacoesExameInterno91 || formData.observacoesExameInterno92 ||
+             (formData.fotosExameInterno91 && Array.isArray(formData.fotosExameInterno91) && formData.fotosExameInterno91.length > 0) ||
+             (formData.fotosExameInterno92 && Array.isArray(formData.fotosExameInterno92) && formData.fotosExameInterno92.length > 0);
+    }
+    if (tabId === "ensaios") {
+      return formData.ensaioMaterial || formData.ensaioAparelho || formData.ensaioModelo ||
+             (formData.registroMedicoes && Array.isArray(formData.registroMedicoes) && formData.registroMedicoes.length > 0) ||
+             formData.testesPressaoSecaoVaso || formData.testesPressaoFoiRealizado ||
+             formData.testesPressaoTipo || formData.testesPressaoPressaoAplicada ||
+             formData.testesPressaoDuracao || formData.testesPressaoVazamentoDeformacao ||
+             formData.testesPressaoDescricaoVazamento || formData.testesPressaoObservacoes;
+    }
+    if (tabId === "recomendacoes") {
+      return formData.recomendacoes && formData.recomendacoes.trim() !== "";
+    }
+    if (tabId === "conclusao") {
+      return formData.conclusaoStatus || formData.conclusaoDescricao || formData.conclusaoPmta;
+    }
+    if (tabId === "proximasInspecoes") {
+      return formData.proximaInspecaoExameExterno || formData.proximaInspecaoExameInterno;
+    }
+    if (tabId === "anexos") {
+      return (formData.anexo1Files && Array.isArray(formData.anexo1Files) && formData.anexo1Files.length > 0) ||
+             (formData.anexo2Files && Array.isArray(formData.anexo2Files) && formData.anexo2Files.length > 0) ||
+             (formData.anexo3Files && Array.isArray(formData.anexo3Files) && formData.anexo3Files.length > 0) ||
+             formData.anexosData || formData.anexosAssinatura || formData.anexosTituloProfissional;
+    }
+    if (tabId === "termoInspecao") {
+      return formData.termoTexto || formData.termoData || formData.termoLocal || 
+             formData.termoEngenheiroNome || formData.termoEngenheiroCrea || 
+             formData.termoImagem;
+    }
     // Outras abas ainda não têm conteúdo
     return false;
   };
@@ -77,6 +111,7 @@ export default function TabsMenu({ activeTab, setActiveTab, formData }) {
             className={`tab-button ${activeTab === tab.id ? "active" : ""} ${hasContent(tab.id) ? "has-content" : ""}`}
             onClick={() => setActiveTab(tab.id)}
           >
+            <span className="tab-number">{tab.number}</span>
             <span className="tab-icon">{tab.icon}</span>
             <span className="tab-label">{tab.label}</span>
             {hasContent(tab.id) && <span className="tab-indicator">✓</span>}

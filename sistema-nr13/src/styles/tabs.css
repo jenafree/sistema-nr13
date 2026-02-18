@@ -48,6 +48,7 @@
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
+  position: relative;
   transition: all 0.2s ease;
   white-space: nowrap;
   font-family: inherit;
@@ -99,6 +100,26 @@
   color: white;
   border-color: #667eea;
   box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);
+}
+
+.tab-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: bold;
+  margin-right: 0.25rem;
+  flex-shrink: 0;
+}
+
+.tab-button.active .tab-number {
+  background: rgba(255, 255, 255, 0.3);
+  color: white;
 }
 
 .tab-icon {

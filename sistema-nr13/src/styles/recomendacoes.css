@@ -1,0 +1,34 @@
+/* Estilos específicos para Recomendações */
+
+.recomendacoes-textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+  transition: border-color 0.2s;
+  line-height: 1.6;
+  min-height: 200px;
+}
+
+.recomendacoes-textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.recomendacoes-textarea::placeholder {
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .recomendacoes-textarea {
+    font-size: 0.95rem;
+    padding: 0.875rem;
+  }
+}
+
