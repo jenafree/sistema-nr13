@@ -11,19 +11,19 @@
 **Email:** [email@empresa.com.br]  
 **Telefone:** [XX] XXXX-XXXX
 
-**CONTRATADO:** SOUZA&AQUINO Engenharia  
+**CONTRATADO:** Jenafree Labs  
 **CNPJ:** [XX.XXX.XXX/XXXX-XX]  
 **Endereço:** [Endereço Completo]  
 **Representante Legal:** [Nome]  
 **CPF:** [XXX.XXX.XXX-XX]  
-**Email:** contato@souzaaquino.com.br  
+**Email:** contato@jenafreelabs.com  
 **Telefone:** [XX] XXXX-XXXX
 
 ---
 
 ## 1. OBJETO
 
-O presente contrato tem por objeto a **licença de uso** do software **Sistema NR-13**, desenvolvido pela SOUZA&AQUINO Engenharia, para gerenciamento e geração de relatórios técnicos de inspeção de vasos de pressão conforme NR-13.
+O presente contrato tem por objeto a **licença de uso** do software **Sistema NR-13**, desenvolvido pela Jenafree Labs, para gerenciamento e geração de relatórios técnicos de inspeção de vasos de pressão conforme NR-13.
 
 ---
 
@@ -120,7 +120,7 @@ A vigência deste contrato inicia-se na data de [__/__/____]
 
 ## 7. PROPRIEDADE INTELECTUAL
 
-7.1. O sistema é de propriedade exclusiva da SOUZA&AQUINO Engenharia;
+7.1. O sistema é de propriedade exclusiva da Jenafree Labs;
 
 7.2. O CONTRATANTE adquire apenas o **direito de uso**, não a propriedade;
 

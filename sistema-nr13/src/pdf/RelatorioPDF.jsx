@@ -146,12 +146,127 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#000",
     marginRight: 5
+  },
+  
+  footer: {
+    position: "absolute",
+    bottom: 30,
+    left: 40,
+    right: 40,
+    textAlign: "center",
+    fontSize: 8,
+    color: "#666",
+    borderTopWidth: 1,
+    borderTopStyle: "solid",
+    borderTopColor: "#ccc",
+    paddingTop: 5
+  },
+  
+  termoSection: {
+    marginTop: 20,
+    marginBottom: 15,
+    borderWidth: 2,
+    borderStyle: "solid",
+    borderColor: "#000",
+    padding: 15,
+    backgroundColor: "#fafafa"
+  },
+  
+  termoTitle: {
+    fontSize: 12,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 10,
+    backgroundColor: "#1e3a8a",
+    color: "#ffffff",
+    padding: 8,
+    textTransform: "uppercase"
+  },
+  
+  termoText: {
+    fontSize: 10,
+    lineHeight: 1.6,
+    marginBottom: 10,
+    textAlign: "justify"
+  },
+  
+  termoSignature: {
+    marginTop: 20,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopStyle: "solid",
+    borderTopColor: "#000"
+  },
+  
+  termoSignatureName: {
+    fontSize: 10,
+    fontWeight: "bold",
+    marginTop: 5
+  },
+  
+  termoSignatureTitle: {
+    fontSize: 9,
+    marginTop: 2
+  },
+  
+  termoSignatureCrea: {
+    fontSize: 9,
+    marginTop: 2
   }
 });
 
-export const RelatorioPDF = ({ dados }) => (
-  <Document>
-    <Page size="A4" style={styles.page}>
+// Função auxiliar para processar texto com negrito
+const processBoldText = (text) => {
+  if (!text) return [];
+  
+  const parts = text.split(/(\*\*.*?\*\*)/g);
+  const result = [];
+  
+  parts.forEach((part, index) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      const boldText = part.slice(2, -2);
+      result.push({ type: 'bold', text: boldText, key: index });
+    } else if (part.trim() !== '') {
+      result.push({ type: 'normal', text: part, key: index });
+    }
+  });
+  
+  return result;
+};
+
+export const RelatorioPDF = ({ dados }) => {
+  // Formatar data do termo
+  const formatTermoDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+  
+  // Formatar data completa (com mês por extenso)
+  const formatTermoDateFull = (dateString, local) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const months = [
+      "janeiro", "fevereiro", "março", "abril", "maio", "junho",
+      "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"
+    ];
+    const day = date.getDate();
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+    const localStr = local ? `${local}, ` : "";
+    return `${localStr}${day} de ${month} de ${year}.`;
+  };
+  
+  return (
+    <Document>
+      <Page 
+        size="A4" 
+        style={styles.page}
+        wrap={true}
+      >
       {/* Header Padrão */}
       <View style={styles.header}>
         <View style={styles.headerTop}>
@@ -255,6 +370,86 @@ export const RelatorioPDF = ({ dados }) => (
         </Text>
       </View>
 
+      {/* Rodapé com numeração */}
+      <Text style={styles.footer} render={({ pageNumber, totalPages }) => (
+        `Página ${pageNumber} de ${totalPages}`
+      )} fixed />
+
     </Page>
+    
+    {/* Página do Termo de Inspeção */}
+    {dados.termoTexto && (
+      <Page size="A4" style={styles.page}>
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.headerTop}>
+            <View style={styles.logoContainer}>
+              <Text style={styles.logoText}>
+                SOUZA<Text style={styles.logoAmpersand}>&amp;</Text>AQUINO
+              </Text>
+              <Text style={styles.logoSubtext}>MAESTRIA EM ENGENHARIA MECANICA</Text>
+            </View>
+            <Text style={styles.reportNumber}>
+              Relatório Nº {dados.numeroRelatorio || "VP_00_000"}
+            </Text>
+          </View>
+        </View>
+
+        {/* Termo de Inspeção */}
+        <View style={styles.termoSection}>
+          <Text style={styles.termoTitle}>TERMO DE INSPEÇÃO</Text>
+          
+          <View style={styles.termoText}>
+            {dados.termoTexto.split('\n').map((line, index) => {
+              const processed = processBoldText(line);
+              if (processed.length === 0) return null;
+              
+              return (
+                <Text key={index} style={{ marginBottom: 5 }}>
+                  {processed.map((item) => {
+                    if (item.type === 'bold') {
+                      return <Text key={item.key} style={{ fontWeight: 'bold' }}>{item.text}</Text>;
+                    }
+                    return item.text;
+                  })}
+                </Text>
+              );
+            })}
+          </View>
+          
+          {/* Data e Local */}
+          <Text style={{ fontSize: 10, textAlign: "right", marginTop: 15 }}>
+            {formatTermoDateFull(dados.termoData || dados.dataFim, dados.termoLocal)}
+          </Text>
+          
+          {/* Assinatura */}
+          <View style={styles.termoSignature}>
+            {dados.termoImagem && (
+              <Image 
+                src={dados.termoImagem} 
+                style={{ width: 150, height: 80, marginBottom: 10, objectFit: 'contain' }}
+              />
+            )}
+            <View style={{ borderTopWidth: 1, borderTopStyle: "solid", borderTopColor: "#000", paddingTop: 5, marginTop: dados.termoImagem ? 0 : 30 }}>
+              <Text style={styles.termoSignatureName}>
+                {dados.termoEngenheiroNome || dados.plhNome || ""}
+              </Text>
+              <Text style={styles.termoSignatureTitle}>
+                {dados.termoEngenheiroTitulo || dados.plhTituloProfissional || ""}
+              </Text>
+              <Text style={styles.termoSignatureCrea}>
+                CREA {dados.termoEngenheiroCrea || dados.plhCrea || ""}
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Rodapé */}
+        <Text style={styles.footer} render={({ pageNumber, totalPages }) => (
+          `Página ${pageNumber} de ${totalPages}`
+        )} fixed />
+      </Page>
+    )}
   </Document>
-);
+  );
+};

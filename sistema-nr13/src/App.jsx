@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import TabsMenu from "./components/TabsMenu";
 import TabContent from "./components/TabContent";
 import Toast from "./components/Toast";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { RelatorioPDF } from "./pdf/RelatorioPDF";
+// import { debounce } from "./utils/debounce"; // Não usado no momento
 import "./App.css";
 import "./styles/tabs.css";
 
@@ -200,13 +201,36 @@ function App() {
     };
   });
 
-  // Auto-save a cada mudança
-  useEffect(() => {
-    const timer = setTimeout(() => {
+  // Função de salvamento
+  const saveToLocalStorage = () => {
+    try {
       localStorage.setItem('autosave_nr13', JSON.stringify(formData));
-    }, 1000); // Salva 1 segundo após parar de digitar
+      setIsSaving(false);
+    } catch (error) {
+      console.error('Erro ao salvar:', error);
+      setIsSaving(false);
+    }
+  };
 
-    return () => clearTimeout(timer);
+  // Auto-save otimizado com debounce (2 segundos)
+  useEffect(() => {
+    setIsSaving(true);
+    
+    // Limpar timeout anterior
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+    
+    // Criar novo timeout
+    saveTimeoutRef.current = setTimeout(() => {
+      saveToLocalStorage();
+    }, 2000); // Salva 2 segundos após parar de digitar
+
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
   }, [formData]);
 
   // Validar campos obrigatórios
@@ -263,7 +287,7 @@ function App() {
           <div className="logo-container">
             <img 
               src="/logo-souza-aquino.svg" 
-              alt="SOUZA&AQUINO Logo" 
+              alt="Souza e Aquino Logo" 
               className="logo-image"
             />
           </div>
@@ -291,7 +315,14 @@ function App() {
               style={{ width: `${calculateProgress()}%` }}
             ></div>
           </div>
-          <span className="progress-text">{calculateProgress()}% completo</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <span className="progress-text">{calculateProgress()}% completo</span>
+            {isSaving && (
+              <span className="saving-indicator" title="Salvando...">
+                💾 Salvando...
+              </span>
+            )}
+          </div>
         </div>
         <div className="header-divider"></div>
       </header>

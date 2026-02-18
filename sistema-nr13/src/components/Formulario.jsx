@@ -1,4 +1,6 @@
 import React from "react";
+import { compressImage } from "../utils/imageCompression";
+import { validateFileSize, validateFileType } from "../utils/validations";
 import "../styles/form.css";
 
 export default function Formulario({ formData, setFormData }) {
@@ -199,17 +201,34 @@ export default function Formulario({ formData, setFormData }) {
               id="imagemEquipamento"
               name="imagemEquipamento"
               accept="image/*"
-              onChange={(e) => {
+              onChange={async (e) => {
                 const file = e.target.files[0];
                 if (file) {
-                  const reader = new FileReader();
-                  reader.onloadend = () => {
+                  // Validar tamanho (5MB)
+                  const sizeValidation = validateFileSize(file, 5);
+                  if (!sizeValidation.valid) {
+                    alert(sizeValidation.message);
+                    return;
+                  }
+                  
+                  // Validar tipo
+                  const typeValidation = validateFileType(file, ['image/jpeg', 'image/png', 'image/jpg', 'image/webp']);
+                  if (!typeValidation.valid) {
+                    alert(typeValidation.message);
+                    return;
+                  }
+                  
+                  try {
+                    // Comprimir imagem antes de salvar
+                    const compressedImage = await compressImage(file, 1920, 1080, 0.8);
                     setFormData({
                       ...formData,
-                      imagemEquipamento: reader.result
+                      imagemEquipamento: compressedImage
                     });
-                  };
-                  reader.readAsDataURL(file);
+                  } catch (error) {
+                    console.error('Erro ao processar imagem:', error);
+                    alert('Erro ao processar imagem. Tente novamente.');
+                  }
                 }
               }}
               style={{ display: 'none' }}
@@ -225,19 +244,36 @@ export default function Formulario({ formData, setFormData }) {
                 e.preventDefault();
                 e.currentTarget.classList.remove('drag-over');
               }}
-              onDrop={(e) => {
+              onDrop={async (e) => {
                 e.preventDefault();
                 e.currentTarget.classList.remove('drag-over');
                 const file = e.dataTransfer.files[0];
                 if (file && file.type.startsWith('image/')) {
-                  const reader = new FileReader();
-                  reader.onloadend = () => {
+                  // Validar tamanho (5MB)
+                  const sizeValidation = validateFileSize(file, 5);
+                  if (!sizeValidation.valid) {
+                    alert(sizeValidation.message);
+                    return;
+                  }
+                  
+                  // Validar tipo
+                  const typeValidation = validateFileType(file, ['image/jpeg', 'image/png', 'image/jpg', 'image/webp']);
+                  if (!typeValidation.valid) {
+                    alert(typeValidation.message);
+                    return;
+                  }
+                  
+                  try {
+                    // Comprimir imagem antes de salvar
+                    const compressedImage = await compressImage(file, 1920, 1080, 0.8);
                     setFormData({
                       ...formData,
-                      imagemEquipamento: reader.result
+                      imagemEquipamento: compressedImage
                     });
-                  };
-                  reader.readAsDataURL(file);
+                  } catch (error) {
+                    console.error('Erro ao processar imagem:', error);
+                    alert('Erro ao processar imagem. Tente novamente.');
+                  }
                 }
               }}
             >

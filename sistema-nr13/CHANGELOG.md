@@ -17,7 +17,7 @@ Primeira versão funcional do sistema com estrutura completa e funcionalidades e
 ### ✨ Adicionado
 
 #### Interface e Layout
-- Header profissional com logo SOUZA&AQUINO
+- Header profissional com logo Souza e Aquino
 - Campo de número do relatório no header
 - Títulos principais (Relatório Técnico NR-13 / Vasos sob Pressão)
 - Barra de progresso visual mostrando % de preenchimento
@@ -268,9 +268,9 @@ sistema-nr13/
 
 ## 🙏 Créditos
 
-**Desenvolvido por:** Neftali  
-**Cliente:** SOUZA&AQUINO - Maestria em Engenharia Mecânica  
-**Próximo desenvolvedor:** Luiz Felipe
+**Desenvolvido por:** Neftali e Luiz Felipe  
+**Empresa:** Jenafree Labs  
+**Cliente:** Souza e Aquino - Maestria em Engenharia Mecânica
 
 ---
 

@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Arquivos protegidos (criptografados)
+*.encrypted
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

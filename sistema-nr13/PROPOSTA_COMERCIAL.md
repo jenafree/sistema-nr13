@@ -10,17 +10,17 @@
 **Email:** [email@empresa.com.br]  
 **Telefone:** [XX] XXXX-XXXX
 
-**De:** SOUZA&AQUINO Engenharia  
+**De:** Jenafree Labs  
 **CNPJ:** XX.XXX.XXX/XXXX-XX  
 **Endereço:** [Endereço Completo]  
-**Email:** contato@souzaaquino.com.br  
+**Email:** contato@jenafreelabs.com  
 **Telefone:** [XX] XXXX-XXXX
 
 ---
 
 ## 🎯 1. APRESENTAÇÃO
 
-A **SOUZA&AQUINO Engenharia** tem o prazer de apresentar a proposta comercial para implementação e licenciamento do **Sistema NR-13**, uma solução completa e moderna para gerenciamento e geração de relatórios técnicos de inspeção de vasos de pressão, totalmente alinhada com a **Norma Regulamentadora 13 (NR-13)**.
+A **Jenafree Labs** tem o prazer de apresentar a proposta comercial para implementação e licenciamento do **Sistema NR-13**, uma solução completa e moderna para gerenciamento e geração de relatórios técnicos de inspeção de vasos de pressão, totalmente alinhada com a **Norma Regulamentadora 13 (NR-13)**.
 
 ### 1.1. Sobre o Sistema
 
@@ -168,7 +168,7 @@ O Sistema NR-13 é uma aplicação web desenvolvida em React.js que automatiza e
 - **Segurança de dados** (LGPD compliant)
 
 ### 6.2. Suporte
-- **Email:** suporte@souzaaquino.com.br
+- **Email:** suporte@jenafreelabs.com
 - **WhatsApp:** [XX] XXXXX-XXXX
 - **Horário:** Conforme plano contratado
 
@@ -224,12 +224,12 @@ O Sistema NR-13 é uma aplicação web desenvolvida em React.js que automatiza e
 
 ## 📞 10. CONTATO
 
-**SOUZA&AQUINO Engenharia**
+**Jenafree Labs**
 
-- **Email:** contato@souzaaquino.com.br
+- **Email:** contato@jenafreelabs.com
 - **WhatsApp:** [XX] XXXXX-XXXX
 - **Telefone:** [XX] XXXX-XXXX
-- **Site:** www.souzaaquino.com.br
+- **Site:** www.jenafreelabs.com
 
 ---
 
@@ -243,7 +243,7 @@ Esta proposta é válida por **30 dias** a partir da data de emissão.
 
 **Aguardamos sua resposta para iniciarmos uma parceria de sucesso!**
 
-*SOUZA&AQUINO Engenharia*  
+*Jenafree Labs*  
 *Soluções em Engenharia e Consultoria Técnica*
 
 </div>
@@ -257,6 +257,6 @@ _________________________
 [Data]
 
 _________________________  
-SOUZA&AQUINO Engenharia  
+Jenafree Labs  
 [Data]
 

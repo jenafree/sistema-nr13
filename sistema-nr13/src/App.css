@@ -107,6 +107,23 @@
   text-align: right;
 }
 
+.saving-indicator {
+  font-size: 0.8rem;
+  color: #10b981;
+  font-weight: 500;
+  animation: pulse 1.5s ease-in-out infinite;
+  white-space: nowrap;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
 .header-titles {
   text-align: center;
   display: flex;

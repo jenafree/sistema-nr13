@@ -1,4 +1,6 @@
 import React, { useEffect } from "react";
+import { compressImage } from "../utils/imageCompression";
+import { validateFileSize, validateFileType } from "../utils/validations";
 import "../styles/form.css";
 import "../styles/termo-inspecao.css";
 
@@ -28,20 +30,33 @@ export default function TermoInspecao({ formData, setFormData }) {
   }, [formData.dataFim, formData.tipoInspecao, formData.equipamento, formData.tag, formData.numeroRelatorio]);
 
   // Função para upload de imagem
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setFormData(prev => ({
-            ...prev,
-            termoImagem: reader.result
-          }));
-        };
-        reader.readAsDataURL(file);
-      } else {
-        alert('Por favor, selecione apenas arquivos de imagem.');
+      // Validar tamanho (5MB)
+      const sizeValidation = validateFileSize(file, 5);
+      if (!sizeValidation.valid) {
+        alert(sizeValidation.message);
+        return;
+      }
+      
+      // Validar tipo
+      const typeValidation = validateFileType(file, ['image/jpeg', 'image/png', 'image/jpg', 'image/webp']);
+      if (!typeValidation.valid) {
+        alert(typeValidation.message);
+        return;
+      }
+      
+      try {
+        // Comprimir imagem antes de salvar
+        const compressedImage = await compressImage(file, 1920, 1080, 0.8);
+        setFormData(prev => ({
+          ...prev,
+          termoImagem: compressedImage
+        }));
+      } catch (error) {
+        console.error('Erro ao processar imagem:', error);
+        alert('Erro ao processar imagem. Tente novamente.');
       }
     }
   };
@@ -56,20 +71,37 @@ export default function TermoInspecao({ formData, setFormData }) {
     e.currentTarget.classList.remove('drag-over');
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = async (e) => {
     e.preventDefault();
     e.currentTarget.classList.remove('drag-over');
     
     const file = e.dataTransfer.files[0];
     if (file && file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
+      // Validar tamanho (5MB)
+      const sizeValidation = validateFileSize(file, 5);
+      if (!sizeValidation.valid) {
+        alert(sizeValidation.message);
+        return;
+      }
+      
+      // Validar tipo
+      const typeValidation = validateFileType(file, ['image/jpeg', 'image/png', 'image/jpg', 'image/webp']);
+      if (!typeValidation.valid) {
+        alert(typeValidation.message);
+        return;
+      }
+      
+      try {
+        // Comprimir imagem antes de salvar
+        const compressedImage = await compressImage(file, 1920, 1080, 0.8);
         setFormData(prev => ({
           ...prev,
-          termoImagem: reader.result
+          termoImagem: compressedImage
         }));
-      };
-      reader.readAsDataURL(file);
+      } catch (error) {
+        console.error('Erro ao processar imagem:', error);
+        alert('Erro ao processar imagem. Tente novamente.');
+      }
     } else {
       alert('Por favor, solte apenas arquivos de imagem.');
     }

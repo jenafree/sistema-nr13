@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { validateFileSize, validateFileType } from "../utils/validations";
 import "../styles/form.css";
 import "../styles/anexos.css";
 
@@ -22,12 +23,26 @@ export default function Anexos({ formData, setFormData }) {
     const allowedExtensions = ['.pdf', '.doc', '.docx'];
     
     const validFiles = files.filter(file => {
+      // Validar tamanho (10MB para documentos)
+      const sizeValidation = validateFileSize(file, 10);
+      if (!sizeValidation.valid) {
+        alert(`${file.name}: ${sizeValidation.message}`);
+        return false;
+      }
+      
+      // Validar tipo
       const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
-      return allowedTypes.includes(file.type) || allowedExtensions.includes(fileExtension);
+      const isValidType = allowedTypes.includes(file.type) || allowedExtensions.includes(fileExtension);
+      
+      if (!isValidType) {
+        alert(`${file.name}: Tipo de arquivo não permitido. Use PDF, DOC ou DOCX.`);
+        return false;
+      }
+      
+      return true;
     });
 
     if (validFiles.length === 0) {
-      alert('Por favor, selecione apenas arquivos PDF, DOC ou DOCX.');
       return;
     }
 

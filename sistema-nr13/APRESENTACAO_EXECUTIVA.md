@@ -129,9 +129,9 @@ Interface moderna, integração com APIs, geração automática de PDFs e preço
 
 ## 📞 Contato
 
-**SOUZA&AQUINO Engenharia**
+**Jenafree Labs**
 
-- Email: contato@souzaaquino.com.br
+- Email: contato@jenafreelabs.com
 - WhatsApp: [XX] XXXXX-XXXX
 - Telefone: [XX] XXXX-XXXX
 
