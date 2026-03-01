@@ -1,12 +1,21 @@
 import React from "react";
 import { compressImage } from "../utils/imageCompression";
-import { validateFileSize, validateFileType } from "../utils/validations";
+import { validateFileSize, validateFileType, validateDateNotFuture } from "../utils/validations";
 import "../styles/form.css";
 
 export default function Formulario({ formData, setFormData }) {
+  const today = new Date();
+  const maxDateTime = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}T${String(today.getHours()).padStart(2, "0")}:${String(today.getMinutes()).padStart(2, "0")}`;
 
   function handleChange(e) {
     const { name, value } = e.target;
+    if (name === "dataInicio" || name === "dataFim") {
+      const validation = validateDateNotFuture(value);
+      if (!validation.valid) {
+        alert(validation.message);
+        return;
+      }
+    }
     setFormData({
       ...formData,
       [name]: value
@@ -171,7 +180,8 @@ export default function Formulario({ formData, setFormData }) {
               value={formData.dataInicio || ""}
               onChange={handleChange}
               min="1950-01-01T00:00"
-              max="2100-12-31T23:59"
+              max={maxDateTime}
+              title="Data não pode ser futura"
             />
           </div>
 
@@ -185,7 +195,8 @@ export default function Formulario({ formData, setFormData }) {
               value={formData.dataFim || ""}
               onChange={handleChange}
               min="1950-01-01T00:00"
-              max="2100-12-31T23:59"
+              max={maxDateTime}
+              title="Data não pode ser futura"
             />
           </div>
         </div>

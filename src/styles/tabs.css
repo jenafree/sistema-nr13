@@ -1,12 +1,14 @@
-/* Estilos das abas */
+/* Estilos das abas — Design System aplicado */
 
 .tabs-container {
-  background: white;
+  background: #FFFFFF;
   border-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  margin-bottom: 1.5rem;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 1px 3px rgba(13, 33, 73, 0.08);
+  margin-bottom: 1rem;
   overflow-x: auto;
+  border: 1px solid #E5E7EB;
+  animation: ds-card-fade-in 0.35s ease-out forwards;
 }
 
 .tabs-scroll {
@@ -40,13 +42,14 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.25rem;
+  padding: 0.5rem 1rem;
   border: 2px solid #e5e7eb;
   border-radius: 8px;
   background: white;
   color: #374151;
   font-size: 0.9rem;
   font-weight: 500;
+  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
   cursor: pointer;
   position: relative;
   transition: all 0.2s ease;
@@ -59,7 +62,7 @@
   position: absolute;
   top: -4px;
   right: -4px;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: #1FA35F;
   color: white;
   width: 20px;
   height: 20px;
@@ -90,16 +93,16 @@
 }
 
 .tab-button:hover {
-  border-color: #667eea;
-  background: #f8fafc;
+  border-color: #35A7FF;
+  background: #F5F7FA;
   transform: translateY(-1px);
 }
 
 .tab-button.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #35A7FF;
   color: white;
-  border-color: #667eea;
-  box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);
+  border-color: #35A7FF;
+  box-shadow: 0 2px 6px rgba(53, 167, 255, 0.25);
 }
 
 .tab-number {
@@ -108,7 +111,7 @@
   justify-content: center;
   min-width: 24px;
   height: 24px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #35A7FF;
   color: white;
   border-radius: 50%;
   font-size: 0.75rem;
@@ -134,17 +137,24 @@
   width: 100%;
 }
 
+.tab-combined-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
 .tab-content-placeholder {
-  background: white;
+  background: #FFFFFF;
   border-radius: 12px;
-  padding: 3rem;
+  padding: 1.5rem 2rem;
+  animation: ds-card-fade-in 0.35s ease-out forwards;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   text-align: center;
   margin: 0 auto;
 }
 
 .tab-content-placeholder h3 {
-  color: #667eea;
+  color: #35A7FF;
   font-size: 1.5rem;
   margin-bottom: 1rem;
 }

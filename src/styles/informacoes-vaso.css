@@ -1,227 +1,263 @@
-/* Estilos específicos para Informações do Vaso */
+/**
+ * Informações do Vaso — Design System
+ * Página refinada com hierarquia clara e estética corporativa
+ */
 
-/* Seletor de Tipo de Vaso */
+/* ========== Seletor de Tipo de Vaso ========== */
 .tipo-vaso-selector {
-  margin: 0 auto 2rem auto;
-  padding: 1.5rem;
-  background: #f8f9fa;
-  border-radius: 8px;
-  border: 1px solid #e2e8f0;
-  max-width: 600px;
+  margin: 0 0 var(--ds-space-5) 0;
+  padding: var(--ds-space-5);
+  background: var(--ds-color-branco);
+  border-radius: var(--ds-radius-lg);
+  border: 1px solid var(--ds-color-borda);
+  box-shadow: var(--ds-shadow-sm);
 }
 
 .tipo-vaso-label {
   display: block;
-  margin-bottom: 1rem;
+  margin-bottom: var(--ds-space-3);
   font-weight: 600;
-  color: #334155;
-  font-size: 1rem;
+  color: var(--ds-color-texto-principal);
+  font-size: var(--ds-font-size-padrao);
 }
 
 .tipo-vaso-buttons {
   display: flex;
-  gap: 1rem;
+  gap: var(--ds-space-3);
 }
 
 .tipo-vaso-btn {
   flex: 1;
-  padding: 0.875rem 1.5rem;
-  font-size: 1rem;
+  padding: var(--ds-space-3) var(--ds-space-5);
+  font-size: 0.9375rem;
   font-weight: 600;
-  border: 2px solid #cbd5e1;
-  background: white;
-  color: #64748b;
-  border-radius: 8px;
+  letter-spacing: 0.02em;
+  border: 2px solid var(--ds-color-borda);
+  background: var(--ds-color-branco);
+  color: var(--ds-color-texto-secundario);
+  border-radius: var(--ds-radius-md);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: border-color var(--ds-transition-base), color var(--ds-transition-base), background var(--ds-transition-base), box-shadow var(--ds-transition-base);
 }
 
 .tipo-vaso-btn:hover {
-  border-color: #3b82f6;
-  color: #3b82f6;
-  background: #eff6ff;
+  border-color: var(--ds-color-azul-destaque);
+  color: var(--ds-color-azul-destaque);
+  background: rgba(53, 167, 255, 0.04);
 }
 
 .tipo-vaso-btn.active {
-  background: #3b82f6;
+  background: var(--ds-color-azul-destaque);
   color: white;
-  border-color: #3b82f6;
+  border-color: var(--ds-color-azul-destaque);
+  box-shadow: var(--ds-shadow-foco);
 }
 
-/* Navegação por Seções (Tabs) */
+/* ========== Navegação por Seções (Tabs) ========== */
 .section-tabs {
   display: flex;
-  gap: 0.5rem;
-  margin: 0 auto 2rem auto;
-  border-bottom: 2px solid #e2e8f0;
-  justify-content: center;
-  max-width: 800px;
+  gap: 0;
+  margin: 0 0 var(--ds-space-6) 0;
+  border-bottom: 2px solid var(--ds-color-borda);
+  overflow-x: auto;
 }
 
 .section-tab {
-  padding: 0.875rem 1.5rem;
-  font-size: 0.95rem;
+  padding: var(--ds-space-3) var(--ds-space-5);
+  font-size: 0.9375rem;
   font-weight: 500;
   border: none;
   background: transparent;
-  color: #64748b;
+  color: var(--ds-color-texto-muted);
   cursor: pointer;
   border-bottom: 3px solid transparent;
-  transition: all 0.2s;
+  transition: color var(--ds-transition-base), border-color var(--ds-transition-base);
   position: relative;
-  top: 2px;
+  bottom: -2px;
+  white-space: nowrap;
 }
 
 .section-tab:hover {
-  color: #3b82f6;
-  background: #f8f9fa;
+  color: var(--ds-color-azul-destaque);
 }
 
 .section-tab.active {
-  color: #3b82f6;
-  border-bottom-color: #3b82f6;
+  color: var(--ds-color-azul-destaque);
+  border-bottom-color: var(--ds-color-azul-destaque);
   font-weight: 600;
 }
 
-/* Conteúdo das Seções */
+/* ========== Conteúdo das Seções ========== */
 .section-content {
-  min-height: 400px;
+  min-height: 360px;
 }
 
 .operational-data-single,
 .construction-data-single,
 .classification-data-single {
-  background: #f8f9fa;
-  padding: 1.25rem;
-  border-radius: 8px;
-  border: 1px solid #e2e8f0;
-  max-width: 1200px;
-  margin: 0 auto;
+  background: var(--ds-color-fundo-principal);
+  padding: var(--ds-space-6);
+  border-radius: var(--ds-radius-lg);
+  border: 1px solid var(--ds-color-borda);
+  margin: 0;
+}
+
+/* Subgrupos (Pressões, Temperaturas) */
+.vaso-field-group {
+  margin-bottom: var(--ds-space-6);
+}
+
+.vaso-field-group:last-child {
+  margin-bottom: 0;
+}
+
+.vaso-field-group-title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--ds-color-texto-secundario);
+  margin-bottom: var(--ds-space-3);
+  padding-bottom: var(--ds-space-1);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .operational-data-single .form-group {
-  margin-bottom: 0.75rem;
+  margin-bottom: var(--ds-space-3);
 }
 
 .operational-data-single .form-row {
-  margin-bottom: 0.75rem;
+  margin-bottom: var(--ds-space-3);
 }
 
 /* Linha com 3 campos */
 .form-row-three {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 1.25rem;
-  margin-bottom: 0.75rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--ds-space-4);
+  margin-bottom: var(--ds-space-4);
 }
 
 /* Linha com 4 campos */
 .form-row-four {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 1.25rem;
-  margin-bottom: 0.75rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--ds-space-4);
+  margin-bottom: var(--ds-space-4);
 }
 
 /* Inputs com unidades */
 .input-with-unit {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--ds-space-2);
+  border-radius: var(--ds-radius-md);
 }
 
 .input-with-unit input {
   flex: 1;
+  min-width: 0;
 }
 
 .input-with-unit .unit {
-  min-width: 70px;
-  font-size: 0.9rem;
-  color: #64748b;
+  min-width: 72px;
+  font-size: 0.875rem;
+  color: var(--ds-color-texto-muted);
   font-weight: 500;
   text-align: right;
   white-space: nowrap;
 }
 
-/* Selects estilizados */
-select {
+/* Selects — alinhados ao design system */
+.vaso-select {
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  background: white;
-  color: #334155;
+  padding: 0.625rem var(--ds-space-3);
+  border: 1px solid var(--ds-color-borda);
+  border-radius: var(--ds-radius-md);
+  font-size: 0.9375rem;
+  background: var(--ds-color-branco);
+  color: var(--ds-color-texto-principal);
   cursor: pointer;
-  transition: border-color 0.2s;
+  transition: border-color var(--ds-transition-base);
 }
 
-select:hover {
-  border-color: #3b82f6;
+.vaso-select:hover {
+  border-color: var(--ds-color-azul-destaque);
 }
 
-select:focus {
+.vaso-select:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: var(--ds-color-borda-foco);
+  box-shadow: var(--ds-shadow-foco);
 }
 
 /* Código de Projeto */
+.vaso-codigo-secao {
+  margin-top: var(--ds-space-6);
+  padding-top: var(--ds-space-5);
+  border-top: 1px solid var(--ds-color-borda);
+}
+
 .codigo-projeto-input {
-  font-size: 1rem;
-  padding: 0.875rem;
+  font-size: var(--ds-font-size-padrao);
+  padding: var(--ds-space-3);
 }
 
 /* Nota de rodapé */
 .footnote {
-  margin-top: 2rem;
-  padding: 1rem;
-  background: #fef3c7;
-  border-left: 4px solid #f59e0b;
-  border-radius: 6px;
+  margin-top: var(--ds-space-6);
+  padding: var(--ds-space-4);
+  background: rgba(31, 163, 95, 0.08);
+  border-left: 4px solid var(--ds-color-verde-seguranca);
+  border-radius: var(--ds-radius-md);
 }
 
 .footnote p {
   margin: 0;
-  font-size: 0.9rem;
-  color: #92400e;
+  font-size: 0.875rem;
+  color: var(--ds-color-texto-secundario);
   line-height: 1.6;
 }
 
 .footnote strong {
-  color: #78350f;
+  color: var(--ds-color-texto-principal);
 }
 
-/* Responsivo */
+/* ========== Responsivo ========== */
+@media (max-width: 900px) {
+  .form-row-four {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
   .tipo-vaso-buttons {
     flex-direction: column;
   }
 
   .section-tabs {
-    flex-wrap: wrap;
-    gap: 0.25rem;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
   }
 
   .section-tab {
-    padding: 0.75rem 1rem;
-    font-size: 0.85rem;
+    padding: var(--ds-space-2) var(--ds-space-3);
+    font-size: 0.875rem;
   }
 
   .operational-data-single,
   .construction-data-single,
   .classification-data-single {
-    padding: 1rem;
+    padding: var(--ds-space-4);
   }
 
   .input-with-unit .unit {
-    min-width: 50px;
-    font-size: 0.85rem;
+    min-width: 56px;
+    font-size: 0.8125rem;
   }
 
   .form-row-three,
   .form-row-four {
     grid-template-columns: 1fr;
-    gap: 0.75rem;
+    gap: var(--ds-space-3);
   }
 }

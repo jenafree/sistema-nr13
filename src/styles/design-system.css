@@ -1,0 +1,260 @@
+/**
+ * DESIGN SYSTEM BASE — Sistema NR
+ * Base visual padronizada: corporativa industrial, segurança, engenharia.
+ * Não alterar regras de negócio.
+ */
+
+/* ============================================
+   1) VARIÁVEIS CSS GLOBAIS
+   ============================================ */
+
+:root {
+  /* --- Paleta de cores --- */
+  --ds-color-azul-escuro: #0D2149;
+  --ds-color-verde-seguranca: #1FA35F;
+  --ds-color-azul-destaque: #35A7FF;
+  --ds-color-fundo-principal: #F5F7FA;
+  --ds-color-branco: #FFFFFF;
+
+  /* Cores complementares */
+  --ds-color-texto-principal: #0D2149;
+  --ds-color-texto-secundario: #4B5563;
+  --ds-color-texto-muted: #6B7280;
+  --ds-color-borda: #E5E7EB;
+  --ds-color-borda-foco: #1FA35F;
+
+  /* --- Tipografia --- */
+  --ds-font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --ds-font-size-titulo: 28px;
+  --ds-font-weight-titulo: 600;
+  --ds-font-size-subtitulo: 18px;
+  --ds-font-weight-subtitulo: 500;
+  --ds-font-size-padrao: 16px;
+  --ds-line-height-padrao: 1.5;
+
+  /* --- Border radius --- */
+  --ds-radius-sm: 6px;
+  --ds-radius-md: 8px;
+  --ds-radius-lg: 12px;
+  --ds-radius-xl: 16px;
+
+  /* --- Sombras --- */
+  --ds-shadow-sm: 0 1px 3px rgba(13, 33, 73, 0.08);
+  --ds-shadow-md: 0 4px 6px rgba(13, 33, 73, 0.1);
+  --ds-shadow-lg: 0 10px 25px rgba(13, 33, 73, 0.1);
+  --ds-shadow-foco: 0 0 0 3px rgba(31, 163, 95, 0.25);
+  --ds-shadow-hover: 0 4px 12px rgba(13, 33, 73, 0.12);
+
+  /* --- Espaçamento (escala 8px) --- */
+  --ds-space-1: 4px;
+  --ds-space-2: 8px;
+  --ds-space-3: 12px;
+  --ds-space-4: 16px;
+  --ds-space-5: 20px;
+  --ds-space-6: 24px;
+  --ds-space-7: 32px;
+  --ds-space-8: 40px;
+  --ds-space-9: 48px;
+
+  /* --- Transições --- */
+  --ds-transition-fast: 0.15s ease;
+  --ds-transition-base: 0.3s ease;
+  --ds-transition-slow: 0.4s ease;
+}
+
+/* ============================================
+   2) COMPONENTE PADRÃO — CARD
+   border-radius: 12px | box-shadow suave | padding equilibrado
+   ============================================ */
+
+.ds-card {
+  background: var(--ds-color-branco);
+  border-radius: var(--ds-radius-lg);
+  box-shadow: var(--ds-shadow-md);
+  padding: var(--ds-space-6);
+  border: 1px solid var(--ds-color-borda);
+}
+
+.ds-card--compact {
+  padding: var(--ds-space-4);
+}
+
+.ds-card--spacious {
+  padding: var(--ds-space-8);
+}
+
+/* Fade-in leve ao carregar — aplicado via .ds-card-animate ou nos containers */
+.ds-card-animate {
+  animation: ds-fade-in 0.35s ease-out forwards;
+}
+
+@keyframes ds-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Alias para cards */
+@keyframes ds-card-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ============================================
+   3) BOTÃO PADRÃO
+   Transição 0.3s | Hover translateY -2px | Sombra no hover
+   ============================================ */
+
+.ds-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-space-2);
+  padding: var(--ds-space-2) var(--ds-space-4);
+  font-family: var(--ds-font-family);
+  font-size: var(--ds-font-size-padrao);
+  font-weight: 500;
+  line-height: var(--ds-line-height-padrao);
+  border: none;
+  border-radius: var(--ds-radius-md);
+  cursor: pointer;
+  transition: transform var(--ds-transition-base), box-shadow var(--ds-transition-base), background-color var(--ds-transition-base);
+}
+
+.ds-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--ds-shadow-hover);
+}
+
+.ds-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.ds-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ds-btn--primary {
+  background-color: var(--ds-color-verde-seguranca);
+  color: var(--ds-color-branco);
+}
+
+.ds-btn--primary:hover:not(:disabled) {
+  background-color: #1a8f52;
+}
+
+.ds-btn--secondary {
+  background-color: var(--ds-color-azul-destaque);
+  color: var(--ds-color-branco);
+}
+
+.ds-btn--secondary:hover:not(:disabled) {
+  background-color: #2389e6;
+}
+
+.ds-btn--outline {
+  background-color: transparent;
+  color: var(--ds-color-azul-escuro);
+  border: 2px solid var(--ds-color-borda);
+}
+
+.ds-btn--outline:hover:not(:disabled) {
+  border-color: var(--ds-color-verde-seguranca);
+  color: var(--ds-color-verde-seguranca);
+}
+
+/* ============================================
+   4) INPUT PADRÃO
+   Border neutra | Foco com verde #1FA35F | Box-shadow suave no foco
+   ============================================ */
+
+.ds-input {
+  width: 100%;
+  padding: var(--ds-space-2) var(--ds-space-3);
+  font-family: var(--ds-font-family);
+  font-size: var(--ds-font-size-padrao);
+  line-height: var(--ds-line-height-padrao);
+  color: var(--ds-color-texto-principal);
+  background-color: var(--ds-color-branco);
+  border: 1px solid var(--ds-color-borda);
+  border-radius: var(--ds-radius-md);
+  transition: border-color var(--ds-transition-base), box-shadow var(--ds-transition-base), outline var(--ds-transition-base);
+}
+
+.ds-input::placeholder {
+  color: var(--ds-color-texto-muted);
+}
+
+.ds-input:hover:not(:disabled) {
+  border-color: #CBD5E1;
+}
+
+.ds-input:focus {
+  outline: none;
+  border-color: var(--ds-color-borda-foco);
+  box-shadow: var(--ds-shadow-foco);
+}
+
+.ds-input:disabled {
+  background-color: var(--ds-color-fundo-principal);
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.ds-input--error {
+  border-color: #DC2626;
+}
+
+.ds-input--error:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.25);
+}
+
+/* ============================================
+   5) TIPOGRAFIA BASE
+   ============================================ */
+
+.ds-titulo {
+  font-size: var(--ds-font-size-titulo);
+  font-weight: var(--ds-font-weight-titulo);
+  color: var(--ds-color-texto-principal);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.ds-subtitulo {
+  font-size: var(--ds-font-size-subtitulo);
+  font-weight: var(--ds-font-weight-subtitulo);
+  color: var(--ds-color-texto-secundario);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.ds-texto {
+  font-size: var(--ds-font-size-padrao);
+  color: var(--ds-color-texto-principal);
+  margin: 0;
+  line-height: var(--ds-line-height-padrao);
+}
+
+/* ============================================
+   6) UTILITÁRIOS DE ESPAÇAMENTO (escala 4px/8px)
+   ============================================ */
+
+.ds-mt-1 { margin-top: var(--ds-space-1); }
+.ds-mt-2 { margin-top: var(--ds-space-2); }
+.ds-mt-3 { margin-top: var(--ds-space-3); }
+.ds-mt-4 { margin-top: var(--ds-space-4); }
+.ds-mt-5 { margin-top: var(--ds-space-5); }
+.ds-mt-6 { margin-top: var(--ds-space-6); }
+
+.ds-mb-1 { margin-bottom: var(--ds-space-1); }
+.ds-mb-2 { margin-bottom: var(--ds-space-2); }
+.ds-mb-3 { margin-bottom: var(--ds-space-3); }
+.ds-mb-4 { margin-bottom: var(--ds-space-4); }
+.ds-mb-5 { margin-bottom: var(--ds-space-5); }
+.ds-mb-6 { margin-bottom: var(--ds-space-6); }
+
+.ds-p-4 { padding: var(--ds-space-4); }
+.ds-p-6 { padding: var(--ds-space-6); }
+.ds-gap-2 { gap: var(--ds-space-2); }
+.ds-gap-4 { gap: var(--ds-space-4); }

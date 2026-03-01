@@ -56,17 +56,21 @@ export default function DadosContratante({ formData, setFormData }) {
       setLoadingCidades(true);
       async function carregarCidades() {
         try {
-          // Busca todas as cidades do estado selecionado
           const response = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estadoSelecionado}/municipios?orderBy=nome`);
           const data = await response.json();
           setCidades(data);
           setLoadingCidades(false);
           
-          // Limpar cidade selecionada quando mudar o estado
-          setFormData(prev => ({
-            ...prev,
-            cidade: ""
-          }));
+          // Só limpar cidade se a atual não existir na nova lista (ex: usuário trocou de estado)
+          // Não limpar quando CNPJ/CEP preencheram cidade - ela será válida na lista
+          setFormData(prev => {
+            const cidadeAtual = prev.cidade || "";
+            const cidadeExiste = data.some(c => c.nome === cidadeAtual);
+            return {
+              ...prev,
+              cidade: cidadeExiste ? cidadeAtual : ""
+            };
+          });
         } catch (error) {
           console.error('Erro ao carregar cidades:', error);
           setLoadingCidades(false);
@@ -120,17 +124,11 @@ export default function DadosContratante({ formData, setFormData }) {
     }
   }
 
-  // Buscar Razão Social via CNPJ usando API ReceitaWS
+  // Buscar dados da empresa via CNPJ — preenche automaticamente todos os campos
   async function buscarRazaoSocialPorCNPJ(cnpj) {
     const cnpjLimpo = cnpj.replace(/\D/g, '');
     
     if (cnpjLimpo.length !== 14) return;
-    
-    // Só busca se a razão social estiver vazia ou for placeholder
-    const razaoAtual = formData.razaoSocial || '';
-    if (razaoAtual.trim() !== '' && razaoAtual !== 'Empresa Fictícia') {
-      return;
-    }
     
     setBuscandoRazaoSocial(true);
     try {
@@ -167,18 +165,10 @@ export default function DadosContratante({ formData, setFormData }) {
           }
         }
 
-        // Buscar estado pelo nome retornado pela API
-        let estadoEncontrado = null;
-        if (data.uf) {
-          estadoEncontrado = estados.find(e => 
-            e.sigla === data.uf.toUpperCase()
-          );
-        }
-
-        // Se encontrou estado, carregar cidades primeiro para poder selecionar a cidade correta
-        const novoEstado = estadoEncontrado ? estadoEncontrado.sigla : (data.uf ? data.uf.toUpperCase() : null);
+        // Carregar cidades usando a UF retornada pela API (não depende de estados estarem carregados)
+        const novoEstado = (data.uf || '').toUpperCase() || null;
         
-        if (novoEstado && estados.length > 0) {
+        if (novoEstado) {
           setLoadingCidades(true);
           try {
             const cidadeResponse = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${novoEstado}/municipios?orderBy=nome`);
@@ -186,11 +176,11 @@ export default function DadosContratante({ formData, setFormData }) {
             setCidades(cidadeData);
             setLoadingCidades(false);
             
-                // Buscar cidade exata pelo nome retornado pela API (case insensitive e sem acentos)
-                const municipioAPI = (data.municipio || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                // Buscar cidade pelo nome retornado pela API (case insensitive, sem acentos, sem espaços extras)
+                const municipioAPI = (data.municipio || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
                 const cidadeEncontrada = cidadeData.find(c => {
-                  const nomeCidade = c.nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                  return nomeCidade === municipioAPI || nomeCidade.includes(municipioAPI) || municipioAPI.includes(nomeCidade);
+                  const nomeCidade = (c.nome || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                  return nomeCidade === municipioAPI || nomeCidade.startsWith(municipioAPI) || municipioAPI.startsWith(nomeCidade) || nomeCidade.includes(municipioAPI) || municipioAPI.includes(nomeCidade);
                 });
                 
                 // Preencher todos os campos após carregar cidades
@@ -250,26 +240,9 @@ export default function DadosContratante({ formData, setFormData }) {
               }
             }
 
-            // Buscar estado
-            let estadoEncontrado = null;
-            if (dataAlt.uf) {
-              estadoEncontrado = estados.find(e => 
-                e.sigla === dataAlt.uf.toUpperCase()
-              );
-            }
-
-            setFormData(prev => ({
-              ...prev,
-              razaoSocial: dataAlt.razao_social,
-              endereco: enderecoCompleto || prev.endereco,
-              cep: dataAlt.cep ? dataAlt.cep.replace(/\D/g, '').replace(/^(\d{5})(\d)/, '$1-$2') : prev.cep,
-              cidade: dataAlt.municipio || prev.cidade,
-              estado: estadoEncontrado ? estadoEncontrado.sigla : (dataAlt.uf ? dataAlt.uf.toUpperCase() : prev.estado)
-            }));
-
-            // Carregar cidades se encontrou estado
-            const novoEstado = estadoEncontrado ? estadoEncontrado.sigla : (dataAlt.uf ? dataAlt.uf.toUpperCase() : null);
-            if (novoEstado && estados.length > 0) {
+            // Carregar cidades usando a UF retornada pela API
+            const novoEstado = (dataAlt.uf || '').toUpperCase() || null;
+            if (novoEstado) {
               setLoadingCidades(true);
               try {
                 const cidadeResponse = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${novoEstado}/municipios?orderBy=nome`);
@@ -277,22 +250,42 @@ export default function DadosContratante({ formData, setFormData }) {
                 setCidades(cidadeData);
                 setLoadingCidades(false);
                 
-                // Buscar cidade exata pelo nome retornado pela API (case insensitive e sem acentos)
-                const municipioAPI = (dataAlt.municipio || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                // Buscar cidade pelo nome retornado pela API (case insensitive, sem acentos, sem espaços extras)
+                const municipioAPI = (dataAlt.municipio || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
                 const cidadeEncontrada = cidadeData.find(c => {
-                  const nomeCidade = c.nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                  return nomeCidade === municipioAPI || nomeCidade.includes(municipioAPI) || municipioAPI.includes(nomeCidade);
+                  const nomeCidade = (c.nome || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                  return nomeCidade === municipioAPI || nomeCidade.startsWith(municipioAPI) || municipioAPI.startsWith(nomeCidade) || nomeCidade.includes(municipioAPI) || municipioAPI.includes(nomeCidade);
                 });
                 
-                // Atualizar cidade após carregar lista
                 setFormData(prev => ({
                   ...prev,
-                  cidade: cidadeEncontrada ? cidadeEncontrada.nome : (dataAlt.municipio || prev.cidade)
+                  razaoSocial: dataAlt.razao_social,
+                  endereco: enderecoCompleto || prev.endereco,
+                  cep: dataAlt.cep ? dataAlt.cep.replace(/\D/g, '').replace(/^(\d{5})(\d)/, '$1-$2') : prev.cep,
+                  cidade: cidadeEncontrada ? cidadeEncontrada.nome : (dataAlt.municipio || prev.cidade),
+                  estado: novoEstado
                 }));
               } catch (error) {
                 console.error('Erro ao carregar cidades após busca de CNPJ (BrasilAPI):', error);
                 setLoadingCidades(false);
+                setFormData(prev => ({
+                  ...prev,
+                  razaoSocial: dataAlt.razao_social,
+                  endereco: enderecoCompleto || prev.endereco,
+                  cep: dataAlt.cep ? dataAlt.cep.replace(/\D/g, '').replace(/^(\d{5})(\d)/, '$1-$2') : prev.cep,
+                  cidade: dataAlt.municipio || prev.cidade,
+                  estado: novoEstado
+                }));
               }
+            } else {
+              setFormData(prev => ({
+                ...prev,
+                razaoSocial: dataAlt.razao_social,
+                endereco: enderecoCompleto || prev.endereco,
+                cep: dataAlt.cep ? dataAlt.cep.replace(/\D/g, '').replace(/^(\d{5})(\d)/, '$1-$2') : prev.cep,
+                cidade: dataAlt.municipio || prev.cidade,
+                estado: prev.estado
+              }));
             }
           }
         }
@@ -354,8 +347,8 @@ export default function DadosContratante({ formData, setFormData }) {
           logradouro = data.logradouro;
         }
         
-        // Se encontrou estado, carregar cidades primeiro para poder preencher a cidade correta
-        if (novoEstado && estados.length > 0) {
+        // Carregar cidades para preencher a cidade correta (ViaCEP retorna UF)
+        if (novoEstado) {
           setLoadingCidades(true);
           try {
             const cidadeResponse = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${novoEstado}/municipios?orderBy=nome`);
@@ -363,11 +356,11 @@ export default function DadosContratante({ formData, setFormData }) {
             setCidades(cidadeData);
             setLoadingCidades(false);
             
-            // Buscar cidade exata pelo nome retornado pela API (case insensitive e sem acentos)
-            const municipioAPI = (data.localidade || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            // Buscar cidade pelo nome retornado pela API (case insensitive, sem acentos, sem espaços extras)
+            const municipioAPI = (data.localidade || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
             const cidadeEncontrada = cidadeData.find(c => {
-              const nomeCidade = c.nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-              return nomeCidade === municipioAPI || nomeCidade.includes(municipioAPI) || municipioAPI.includes(nomeCidade);
+              const nomeCidade = (c.nome || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+              return nomeCidade === municipioAPI || nomeCidade.startsWith(municipioAPI) || municipioAPI.startsWith(nomeCidade) || nomeCidade.includes(municipioAPI) || municipioAPI.includes(nomeCidade);
             });
             
             setFormData(prev => ({
@@ -415,39 +408,6 @@ export default function DadosContratante({ formData, setFormData }) {
       <form className="form-nr13">
 
         <div className="form-group">
-          <label htmlFor="razaoSocial">Razão Social *</label>
-          <div className="razao-social-wrapper">
-            <input
-              id="razaoSocial"
-              name="razaoSocial"
-              type="text"
-              placeholder="Empresa Fictícia"
-              value={formData.razaoSocial || ""}
-              onChange={handleChange}
-              required
-            />
-            {buscandoRazaoSocial && (
-              <span className="loading-razao-social">Buscando...</span>
-            )}
-            {!buscandoRazaoSocial && formData.cnpj && formData.cnpj.length === 18 && cnpjValido && (
-              <button
-                type="button"
-                className="btn-buscar-cnpj"
-                onClick={() => buscarRazaoSocialPorCNPJ(formData.cnpj)}
-                title="Buscar razão social pelo CNPJ"
-              >
-                🔍
-              </button>
-            )}
-          </div>
-          <small className="razao-social-hint">
-            {formData.cnpj && formData.cnpj.length === 18 && cnpjValido
-              ? "CNPJ válido - Clique no ícone 🔍 para buscar a razão social"
-              : "Preencha o CNPJ válido para buscar automaticamente"}
-          </small>
-        </div>
-
-        <div className="form-group">
           <label htmlFor="cnpj">CNPJ *</label>
           <div className="cnpj-input-wrapper">
             <input
@@ -472,8 +432,39 @@ export default function DadosContratante({ formData, setFormData }) {
             <span className="validation-message invalid-message">CNPJ inválido</span>
           )}
           {cnpjValido === true && (
-            <span className="validation-message valid-message">CNPJ válido</span>
+            <span className="validation-message valid-message">CNPJ válido - dados buscados automaticamente</span>
           )}
+          <small className="cnpj-hint">
+            Preencha o CNPJ para buscar razão social, endereço, CEP, cidade e estado automaticamente
+          </small>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="razaoSocial">Razão Social *</label>
+          <div className="razao-social-wrapper">
+            <input
+              id="razaoSocial"
+              name="razaoSocial"
+              type="text"
+              placeholder="Preenchido automaticamente pelo CNPJ"
+              value={formData.razaoSocial || ""}
+              onChange={handleChange}
+              required
+            />
+            {buscandoRazaoSocial && (
+              <span className="loading-razao-social">Buscando...</span>
+            )}
+            {!buscandoRazaoSocial && formData.cnpj && formData.cnpj.length === 18 && cnpjValido && (
+              <button
+                type="button"
+                className="btn-buscar-cnpj"
+                onClick={() => buscarRazaoSocialPorCNPJ(formData.cnpj)}
+                title="Buscar dados pelo CNPJ novamente"
+              >
+                🔍
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="form-group">
@@ -508,7 +499,7 @@ export default function DadosContratante({ formData, setFormData }) {
           <small className="cep-hint">Preencha o CEP para preencher automaticamente o endereço, cidade e estado (opcional)</small>
         </div>
 
-        <div className="form-row">
+        <div className="form-row form-row-estado-cidade">
           <div className="form-group">
             <label htmlFor="estado">Estado *</label>
             <select 
@@ -527,30 +518,27 @@ export default function DadosContratante({ formData, setFormData }) {
             </select>
           </div>
 
-          <div className="form-group">
+          <div className="form-group form-group-cidade">
             <label htmlFor="cidade">Cidade *</label>
-            <input
+            <select
               id="cidade"
               name="cidade"
-              type="text"
-              placeholder="Ex: Goianésia"
               value={formData.cidade || ""}
               onChange={handleChange}
               required
-              list="cidades-list"
-            />
-            <datalist id="cidades-list">
+              disabled={!formData.estado || loadingCidades}
+            >
+              <option value="">
+                {loadingCidades ? "Carregando..." : !formData.estado ? "Selecione o estado primeiro" : "Selecione a cidade"}
+              </option>
               {cidades.map((cidade) => (
                 <option key={cidade.id} value={cidade.nome}>
                   {cidade.nome}
                 </option>
               ))}
-            </datalist>
-            {loadingCidades && (
-              <span className="loading-text">Carregando sugestões de cidades...</span>
-            )}
+            </select>
             {formData.estado && !loadingCidades && cidades.length > 0 && (
-              <small className="cidade-hint">Digite ou selecione uma cidade do estado {formData.estado}</small>
+              <small className="cidade-hint">{cidades.length} cidades do estado {formData.estado}</small>
             )}
           </div>
         </div>

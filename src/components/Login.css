@@ -1,0 +1,228 @@
+/**
+ * LOGIN — Animações sutis e profissionais
+ * Estética corporativa industrial. Sem exageros.
+ */
+
+/* ============================================
+   Fundo — Gradiente animado lento (15s+, movimento suave)
+   ============================================ */
+
+.login-wrapper {
+  margin: 0;
+  font-family: var(--ds-font-family);
+  background: var(--ds-color-azul-escuro);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes loginGradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Fundo base (gradiente) — visível atrás do canvas transparente */
+.login-bg-fallback {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, var(--ds-color-azul-escuro) 0%, #1a2d5c 30%, #0f2750 60%, var(--ds-color-azul-escuro) 100%);
+  background-size: 400% 400%;
+  animation: loginGradientShift 18s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Canvas TubesCursor — fixo, fullscreen, atrás do card; pointer-events: none para o formulário receber cliques */
+.login-tubes-canvas {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ============================================
+   Card — Fade + slide ao carregar
+   ============================================ */
+
+.login-container {
+  position: relative;
+  z-index: 2;
+  background: var(--ds-color-branco);
+  border-radius: var(--ds-radius-lg);
+  box-shadow: var(--ds-shadow-lg);
+  padding: var(--ds-space-8);
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+  border: 1px solid var(--ds-color-borda);
+  animation: loginCardFadeIn 0.6s ease-out forwards;
+}
+
+.login-container.shake {
+  animation: loginShake 0.6s ease-in-out;
+}
+
+@keyframes loginCardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes loginShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}
+
+/* ============================================
+   TIPOGRAFIA
+   ============================================ */
+
+.login-title {
+  font-size: var(--ds-font-size-titulo);
+  font-weight: var(--ds-font-weight-titulo);
+  color: var(--ds-color-texto-principal);
+  margin: 0 0 var(--ds-space-6) 0;
+  line-height: 1.3;
+}
+
+/* ============================================
+   Inputs — Transição suave + destaque verde no foco
+   ============================================ */
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-4);
+}
+
+.login-input-group {
+  position: relative;
+  text-align: left;
+}
+
+.login-input-group input {
+  width: 100%;
+  padding: var(--ds-space-3) var(--ds-space-3) var(--ds-space-2);
+  font-family: var(--ds-font-family);
+  font-size: var(--ds-font-size-padrao);
+  line-height: var(--ds-line-height-padrao);
+  color: var(--ds-color-texto-principal);
+  background: var(--ds-color-branco);
+  border: 1px solid var(--ds-color-borda);
+  border-radius: var(--ds-radius-md);
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-input-group input::placeholder {
+  color: var(--ds-color-texto-muted);
+}
+
+.login-input-group input:hover:not(:disabled) {
+  border-color: #CBD5E1;
+}
+
+.login-input-group input:focus {
+  outline: none;
+  border-color: #1FA35F;
+  box-shadow: 0 0 0 3px rgba(31, 163, 95, 0.2);
+}
+
+.login-input-group input:disabled {
+  background: var(--ds-color-fundo-principal);
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.login-input-group label {
+  position: absolute;
+  left: var(--ds-space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: var(--ds-font-size-padrao);
+  color: var(--ds-color-texto-muted);
+  pointer-events: none;
+  transition: top 0.25s ease, font-size 0.25s ease, color 0.25s ease;
+}
+
+.login-input-group:focus-within label,
+.login-input-group.has-value label {
+  top: var(--ds-space-1);
+  transform: translateY(0);
+  font-size: 12px;
+  color: var(--ds-color-verde-seguranca);
+  font-weight: 500;
+}
+
+.login-erro {
+  font-size: 14px;
+  color: #DC2626;
+  margin: 0;
+  text-align: left;
+  padding: var(--ds-space-1) 0;
+}
+
+/* ============================================
+   Botão — Leve elevação no hover
+   ============================================ */
+
+.login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-space-2);
+  width: 100%;
+  padding: var(--ds-space-3) var(--ds-space-4);
+  margin-top: var(--ds-space-2);
+  font-family: var(--ds-font-family);
+  font-size: var(--ds-font-size-padrao);
+  font-weight: 500;
+  color: var(--ds-color-branco);
+  background: var(--ds-color-verde-seguranca);
+  border: none;
+  border-radius: var(--ds-radius-md);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.login-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(31, 163, 95, 0.25);
+  background: #1a8f52;
+}
+
+.login-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.login-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.login-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: var(--ds-color-branco);
+  border-radius: 50%;
+  animation: loginSpin 0.8s linear infinite;
+}
+
+@keyframes loginSpin {
+  to { transform: rotate(360deg); }
+}

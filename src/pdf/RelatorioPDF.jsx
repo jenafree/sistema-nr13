@@ -242,6 +242,24 @@ const styles = StyleSheet.create({
     fontSize: 9,
     fontWeight: "bold",
     paddingHorizontal: 5
+  },
+
+  watermark: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 999
+  },
+
+  watermarkText: {
+    fontSize: 48,
+    color: "#cccccc",
+    letterSpacing: 8,
+    textTransform: "uppercase"
   }
 });
 
@@ -303,8 +321,58 @@ const formatTermoDateFull = (dateString, local) => {
 const formatPMTA = (value) => {
   if (!value) return "-";
   const num = parseFloat(value.toString().replace(',', '.'));
-  if (isNaN(num)) return value;
+  if (isNaN(num)) return "-";
   return `${num.toFixed(2).replace('.', ',')} kgf/cm²`;
+};
+
+// Extrai número válido de string (ignora texto, aceita vírgula como decimal)
+const parseNumero = (val) => {
+  if (val === "" || val === null || val === undefined) return null;
+  const s = String(val).trim().replace(',', '.');
+  const match = s.match(/[\d.]+/);
+  if (!match) return null;
+  const n = parseFloat(match[0]);
+  return isNaN(n) ? null : n;
+};
+
+// Formata campo numérico com unidade; retorna "-" se valor inválido
+const formatCampoNumerico = (valor, unidade, casasDecimais = 2) => {
+  const n = parseNumero(valor);
+  if (n === null) return "-";
+  const fmt = n % 1 === 0 ? n.toString() : n.toFixed(casasDecimais).replace('.', ',');
+  return `${fmt} ${unidade}`;
+};
+
+// Retorna valor textual ou "-" se vazio
+const formatTexto = (valor, maxLen = 80) => {
+  if (valor === null || valor === undefined) return "-";
+  const s = String(valor).trim();
+  if (!s) return "-";
+  return s.length > maxLen ? s.substring(0, maxLen) + "..." : s;
+};
+
+// Detecta se os dados parecem rascunho: só marca quando VÁRIOS indicadores de teste aparecem
+// (ex.: "CDC" como número do relatório é válido; rascunho só se 2+ campos estiverem vazios/curtos)
+const isRascunho = (dados) => {
+  if (!dados) return true;
+  const s = (v) => (v != null ? String(v).trim() : "");
+  const len = (v) => s(v).length;
+  let indicadores = 0;
+  if (len(dados.numeroRelatorio) < 3) indicadores++;
+  if (len(dados.equipamento) <= 2) indicadores++;
+  if (len(dados.fabricante) <= 2) indicadores++;
+  if (len(dados.tag) <= 2) indicadores++;
+  if (len(dados.numeroSerie) <= 2) indicadores++;
+  return indicadores >= 2;
+};
+
+// Imagem só é usada se for data URL (base64) e tamanho ok; blob: ou muito grande quebra a página 2
+const isSafeImageSrc = (src) => {
+  if (!src || typeof src !== "string") return false;
+  if (src.startsWith("blob:")) return false;
+  if (!src.startsWith("data:")) return false;
+  if (src.length > 2000000) return false; // base64 muito grande pode quebrar o render
+  return true;
 };
 
 // Logo base64 extraída do SVG
@@ -321,7 +389,7 @@ const PDFHeader = ({ numeroRelatorio }) => (
         />
       </View>
       <Text style={styles.reportNumber}>
-        Relatório Nº {numeroRelatorio || "VP_00_000"}
+        Relatório Nº {formatTexto(numeroRelatorio) === "-" ? "VP_00_000" : formatTexto(numeroRelatorio)}
       </Text>
     </View>
     <Text style={styles.mainTitle}>
@@ -334,22 +402,67 @@ const PDFHeader = ({ numeroRelatorio }) => (
 );
 
 export const RelatorioPDF = ({ dados }) => {
+  const showRascunho = isRascunho(dados);
   return (
     <Document>
-      {/* PÁGINA 1: RESUMO DO RELATÓRIO */}
+      {/* PÁGINA 1: SUMÁRIO */}
+      <Page size="A4" style={styles.page} wrap={true}>
+        <PDFHeader numeroRelatorio={dados.numeroRelatorio} />
+        
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>SUMÁRIO</Text>
+          <View style={styles.table}>
+            <View style={styles.tableRow}>
+              <Text style={styles.tableCellBold}>1.</Text>
+              <Text style={styles.tableCell}>Resumo do Relatório</Text>
+              <Text style={styles.tableCell}>2</Text>
+            </View>
+            <View style={styles.tableRow}>
+              <Text style={styles.tableCellBold}>2.</Text>
+              <Text style={styles.tableCell}>Dados do Contratante</Text>
+              <Text style={styles.tableCell}>3</Text>
+            </View>
+            <View style={styles.tableRow}>
+              <Text style={styles.tableCellBold}>3.</Text>
+              <Text style={styles.tableCell}>Responsabilidades</Text>
+              <Text style={styles.tableCell}>4</Text>
+            </View>
+            <View style={styles.tableRow}>
+              <Text style={styles.tableCellBold}>4.</Text>
+              <Text style={styles.tableCell}>Referências Normativas</Text>
+              <Text style={styles.tableCell}>5</Text>
+            </View>
+            <View style={styles.tableRow}>
+              <Text style={styles.tableCellBold}>5.</Text>
+              <Text style={styles.tableCell}>Informações do Vaso</Text>
+              <Text style={styles.tableCell}>6</Text>
+            </View>
+          </View>
+        </View>
+
+        <Text style={styles.footer} render={({ pageNumber, totalPages }) => (
+          `Página ${pageNumber} de ${totalPages}`
+        )} fixed />
+        {showRascunho && (
+          <View style={styles.watermark} fixed>
+            <Text style={styles.watermarkText}>Rascunho</Text>
+          </View>
+        )}
+      </Page>
+
+      {/* PÁGINA 2: RESUMO DO RELATÓRIO */}
       <Page size="A4" style={styles.page} wrap={true}>
         <PDFHeader numeroRelatorio={dados.numeroRelatorio} />
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>1. RESUMO DO RELATÓRIO</Text>
           
-          {/* Dados do Equipamento */}
           <View style={styles.equipmentSection}>
             <View style={styles.equipmentImage}>
-              {dados.imagemEquipamento ? (
+              {dados.imagemEquipamento && isSafeImageSrc(dados.imagemEquipamento) ? (
                 <Image 
                   src={dados.imagemEquipamento} 
-                  style={{ width: '100%', height: '100%' }}
+                  style={{ width: 200, height: 150, objectFit: "contain" }}
                 />
               ) : (
                 <Text style={{ fontSize: 8, color: "#999", textAlign: "center", marginTop: 60 }}>
@@ -359,22 +472,22 @@ export const RelatorioPDF = ({ dados }) => {
             </View>
             <View style={styles.equipmentData}>
               <Text style={styles.label}>Equipamento:</Text>
-              <Text style={styles.value}>{dados.equipamento || "-"}</Text>
+              <Text style={styles.value}>{formatTexto(dados.equipamento)}</Text>
 
               <Text style={styles.label}>Fabricante:</Text>
-              <Text style={styles.value}>{dados.fabricante || "-"}</Text>
+              <Text style={styles.value}>{formatTexto(dados.fabricante)}</Text>
 
               <Text style={styles.label}>Nº de série:</Text>
-              <Text style={styles.value}>{dados.numeroSerie || "-"}</Text>
+              <Text style={styles.value}>{formatTexto(dados.numeroSerie)}</Text>
 
               <Text style={styles.label}>Ano de Fabricação:</Text>
-              <Text style={styles.value}>{dados.anoFabricacao || "-"}</Text>
+              <Text style={styles.value}>{formatTexto(dados.anoFabricacao)}</Text>
 
               <Text style={styles.label}>TAG:</Text>
-              <Text style={styles.value}>{dados.tag || "-"}</Text>
+              <Text style={styles.value}>{formatTexto(dados.tag)}</Text>
 
               <Text style={styles.label}>Tipo:</Text>
-              <Text style={styles.value}>{dados.tipo || "-"}</Text>
+              <Text style={styles.value}>{formatTexto(dados.tipo)}</Text>
             </View>
           </View>
 
@@ -401,45 +514,19 @@ export const RelatorioPDF = ({ dados }) => {
           <Text style={styles.label}>PMTA (Pressão Máxima de Trabalho Admissível):</Text>
           <Text style={styles.value}>{formatPMTA(dados.pmta)}</Text>
 
-          <Text style={styles.label}>Local:</Text>
-          <Text style={styles.value}>{dados.local || "-"}</Text>
+          <Text style={styles.label}>Local de instalação:</Text>
+          <Text style={styles.value}>{formatTexto(dados.local)}</Text>
 
-          <Text style={styles.label}>Data de Início:</Text>
-          <Text style={styles.value}>{formatDate(dados.dataInicio)}</Text>
-
-          <Text style={styles.label}>Data de Fim:</Text>
-          <Text style={styles.value}>{formatDate(dados.dataFim)}</Text>
-        </View>
-
-        {/* Dados do Contratante (Resumo) */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>DADOS DO CONTRATANTE</Text>
-          <View style={{ backgroundColor: "#f0f0f0", padding: 8, marginTop: 5, marginBottom: 10 }}>
-            <Text style={{ fontSize: 9, fontWeight: "bold" }}>CLIENTE</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.rowLabel}>Razão social:</Text>
-            <Text style={styles.rowValue}>{dados.razaoSocial || "-"}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.rowLabel}>CNPJ:</Text>
-            <Text style={styles.rowValue}>{dados.cnpj || "-"}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.rowLabel}>CEP:</Text>
-            <Text style={styles.rowValue}>{dados.cep || "-"}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.rowLabel}>Endereço:</Text>
-            <Text style={styles.rowValue}>{dados.endereco || "-"}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.rowLabel}>Cidade:</Text>
-            <Text style={styles.rowValue}>{dados.cidade || "-"}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.rowLabel}>Estado:</Text>
-            <Text style={styles.rowValue}>{dados.estado || "-"}</Text>
+          <Text style={{ fontSize: 10, fontWeight: "bold", marginTop: 10, marginBottom: 5 }}>DATA DA INSPEÇÃO:</Text>
+          <View style={{ flexDirection: "row", marginBottom: 5 }}>
+            <View style={{ marginRight: 40 }}>
+              <Text style={styles.label}>Início:</Text>
+              <Text style={styles.value}>{formatDate(dados.dataInicio)}</Text>
+            </View>
+            <View>
+              <Text style={styles.label}>Fim:</Text>
+              <Text style={styles.value}>{formatDate(dados.dataFim)}</Text>
+            </View>
           </View>
         </View>
 
@@ -448,7 +535,7 @@ export const RelatorioPDF = ({ dados }) => {
         )} fixed />
       </Page>
 
-      {/* PÁGINA 2: DADOS DO CONTRATANTE (Detalhado) */}
+      {/* PÁGINA 3: DADOS DO CONTRATANTE */}
       {(dados.razaoSocial || dados.cnpj || dados.endereco) && (
         <Page size="A4" style={styles.page} wrap={true}>
           <PDFHeader numeroRelatorio={dados.numeroRelatorio} />
@@ -459,22 +546,22 @@ export const RelatorioPDF = ({ dados }) => {
               <Text style={{ fontSize: 9, fontWeight: "bold" }}>CLIENTE</Text>
             </View>
             <Text style={styles.label}>Razão social:</Text>
-            <Text style={styles.value}>{dados.razaoSocial || "-"}</Text>
+            <Text style={styles.value}>{formatTexto(dados.razaoSocial)}</Text>
 
             <Text style={styles.label}>CNPJ:</Text>
-            <Text style={styles.value}>{dados.cnpj || "-"}</Text>
+            <Text style={styles.value}>{formatTexto(dados.cnpj)}</Text>
 
             <Text style={styles.label}>CEP:</Text>
-            <Text style={styles.value}>{dados.cep || "-"}</Text>
+            <Text style={styles.value}>{formatTexto(dados.cep)}</Text>
 
             <Text style={styles.label}>Endereço:</Text>
-            <Text style={styles.value}>{dados.endereco || "-"}</Text>
+            <Text style={styles.value}>{formatTexto(dados.endereco)}</Text>
 
             <Text style={styles.label}>Cidade:</Text>
-            <Text style={styles.value}>{dados.cidade || "-"}</Text>
+            <Text style={styles.value}>{formatTexto(dados.cidade)}</Text>
 
             <Text style={styles.label}>Estado:</Text>
-            <Text style={styles.value}>{dados.estado || "-"}</Text>
+            <Text style={styles.value}>{formatTexto(dados.estado)}</Text>
           </View>
 
           <Text style={styles.footer} render={({ pageNumber, totalPages }) => (
@@ -483,7 +570,7 @@ export const RelatorioPDF = ({ dados }) => {
         </Page>
       )}
 
-      {/* PÁGINA 3: RESPONSABILIDADES */}
+      {/* PÁGINA 4: RESPONSABILIDADES */}
       {(dados.plhNome || dados.plhTituloProfissional || dados.plhCrea) && (
         <Page size="A4" style={styles.page} wrap={true}>
           <PDFHeader numeroRelatorio={dados.numeroRelatorio} />
@@ -491,13 +578,13 @@ export const RelatorioPDF = ({ dados }) => {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>3. RESPONSABILIDADES</Text>
             <Text style={styles.label}>Nome do Responsável Técnico:</Text>
-            <Text style={styles.value}>{dados.plhNome || "-"}</Text>
+            <Text style={styles.value}>{formatTexto(dados.plhNome)}</Text>
 
             <Text style={styles.label}>Título Profissional:</Text>
-            <Text style={styles.value}>{dados.plhTituloProfissional || "-"}</Text>
+            <Text style={styles.value}>{formatTexto(dados.plhTituloProfissional)}</Text>
 
             <Text style={styles.label}>CREA:</Text>
-            <Text style={styles.value}>{dados.plhCrea || "-"}</Text>
+            <Text style={styles.value}>{formatTexto(dados.plhCrea)}</Text>
           </View>
 
           <Text style={styles.footer} render={({ pageNumber, totalPages }) => (
@@ -506,7 +593,7 @@ export const RelatorioPDF = ({ dados }) => {
         </Page>
       )}
 
-      {/* PÁGINA 4: REFERÊNCIAS NORMATIVAS */}
+      {/* PÁGINA 5: REFERÊNCIAS NORMATIVAS */}
       <Page size="A4" style={styles.page} wrap={true}>
         <PDFHeader numeroRelatorio={dados.numeroRelatorio} />
         
@@ -525,360 +612,124 @@ export const RelatorioPDF = ({ dados }) => {
         )} fixed />
       </Page>
 
-      {/* PÁGINA 5: INFORMAÇÕES DO VASO */}
-      {(dados.fluidoCasco || dados.fluidoTubos || dados.pmtaCasco || dados.pmtaTubos) && (
+      {/* PÁGINA 6: INFORMAÇÕES DO VASO */}
+      {(dados.fluidoCasco || dados.fluidoTubos || dados.codigoProjeto) && (
         <Page size="A4" style={styles.page} wrap={true}>
           <PDFHeader numeroRelatorio={dados.numeroRelatorio} />
           
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>5. INFORMAÇÕES DO VASO</Text>
             
-            {dados.tipoVasoSelecionado === "casco" && (
+            <Text style={{ fontSize: 10, fontWeight: "bold", marginBottom: 6, marginTop: 8 }}>1. DADOS OPERACIONAIS - {dados.tipoVasoSelecionado === "tubos" ? "TUBOS / CALANDRA" : "CASCO"}</Text>
+            <View style={styles.row}>
+              <Text style={styles.rowLabel}>Fluido:</Text>
+              <Text style={styles.rowValue}>{formatTexto(dados.tipoVasoSelecionado === "tubos" ? dados.fluidoTubos : dados.fluidoCasco)}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.rowLabel}>{dados.tipoVasoSelecionado === "tubos" ? "Volume calculado:" : "Volume informado:"}</Text>
+              <Text style={styles.rowValue}>{formatCampoNumerico(dados.tipoVasoSelecionado === "tubos" ? dados.volumeCalculadoTubos : dados.volumeInformadoCasco, "m³")}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.rowLabel}>Pressão de projeto:</Text>
+              <Text style={styles.rowValue}>{formatCampoNumerico(dados.tipoVasoSelecionado === "tubos" ? dados.pressaoProjetoTubos : dados.pressaoProjetoCasco, "kgf/cm²")}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.rowLabel}>P.M.T.A:</Text>
+              <Text style={styles.rowValue}>{formatPMTA(dados.tipoVasoSelecionado === "tubos" ? dados.pmtaTubos : dados.pmtaCasco)}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.rowLabel}>Limitada (P.M.T.A):</Text>
+              <Text style={styles.rowValue}>{formatTexto(dados.tipoVasoSelecionado === "tubos" ? dados.limitadaTubos : dados.limitadaCasco)}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.rowLabel}>P.M.E.A:</Text>
+              <Text style={styles.rowValue}>{formatPMTA(dados.tipoVasoSelecionado === "tubos" ? dados.pmeaTubos : dados.pmeaCasco)}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.rowLabel}>Limitada (P.M.E.A):</Text>
+              <Text style={styles.rowValue}>{formatTexto(dados.tipoVasoSelecionado === "tubos" ? dados.limitadaPmeaTubos : dados.limitadaPmeaCasco)}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.rowLabel}>Pressão de operação:</Text>
+              <Text style={styles.rowValue}>{formatCampoNumerico(dados.tipoVasoSelecionado === "tubos" ? dados.pressaoOperacaoTubos : dados.pressaoOperacaoCasco, "kgf/cm²")}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.rowLabel}>Pressão de teste:</Text>
+              <Text style={styles.rowValue}>{formatCampoNumerico(dados.tipoVasoSelecionado === "tubos" ? dados.pressaoTesteTubos : dados.pressaoTesteCasco, "kgf/cm²")}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.rowLabel}>Temperatura de projeto:</Text>
+              <Text style={styles.rowValue}>{formatCampoNumerico(dados.tipoVasoSelecionado === "tubos" ? dados.temperaturaProjetoTubos : dados.temperaturaProjetoCasco, "°C", 0)}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.rowLabel}>Temperatura de operação:</Text>
+              <Text style={styles.rowValue}>{formatCampoNumerico(dados.tipoVasoSelecionado === "tubos" ? dados.temperaturaOperacaoTubos : dados.temperaturaOperacaoCasco, "°C", 0)}</Text>
+            </View>
+
+            <Text style={{ fontSize: 10, fontWeight: "bold", marginBottom: 6, marginTop: 12 }}>2. CARACTERÍSTICAS CONSTRUTIVAS - {dados.tipoVasoSelecionado === "tubos" ? "TUBOS / CALANDRA" : "CASCO"}</Text>
+            {dados.tipoVasoSelecionado === "tubos" ? (
               <>
-                <Text style={styles.label}>DADOS OPERACIONAIS - CASCO</Text>
                 <View style={styles.row}>
-                  <Text style={styles.rowLabel}>Fluido:</Text>
-                  <Text style={styles.rowValue}>{dados.fluidoCasco || "-"}</Text>
+                  <Text style={styles.rowLabel}>Diâmetro dos tubos:</Text>
+                  <Text style={styles.rowValue}>{formatCampoNumerico(dados.diametroTubos, "mm", 0)}</Text>
                 </View>
                 <View style={styles.row}>
-                  <Text style={styles.rowLabel}>PMTA:</Text>
-                  <Text style={styles.rowValue}>{formatPMTA(dados.pmtaCasco)}</Text>
+                  <Text style={styles.rowLabel}>Altura / comprimento:</Text>
+                  <Text style={styles.rowValue}>{formatCampoNumerico(dados.alturaComprimentoTubos, "mm", 0)}</Text>
                 </View>
                 <View style={styles.row}>
-                  <Text style={styles.rowLabel}>Pressão de Projeto:</Text>
-                  <Text style={styles.rowValue}>{dados.pressaoProjetoCasco || "-"}</Text>
+                  <Text style={styles.rowLabel}>Quantidade de tubos:</Text>
+                  <Text style={styles.rowValue}>{formatTexto(dados.quantidadeTubos)}</Text>
                 </View>
                 <View style={styles.row}>
-                  <Text style={styles.rowLabel}>Temperatura de Operação:</Text>
-                  <Text style={styles.rowValue}>{dados.temperaturaOperacaoCasco || "-"}</Text>
+                  <Text style={styles.rowLabel}>Superfície de troca:</Text>
+                  <Text style={styles.rowValue}>{formatCampoNumerico(dados.superficieTrocaTubos, "m²")}</Text>
                 </View>
               </>
-            )}
-
-            {dados.tipoVasoSelecionado === "tubos" && (
+            ) : (
               <>
-                <Text style={styles.label}>DADOS OPERACIONAIS - TUBOS/CALANDRA</Text>
                 <View style={styles.row}>
-                  <Text style={styles.rowLabel}>Fluido:</Text>
-                  <Text style={styles.rowValue}>{dados.fluidoTubos || "-"}</Text>
+                  <Text style={styles.rowLabel}>Diâmetro interno:</Text>
+                  <Text style={styles.rowValue}>{formatCampoNumerico(dados.diametroInternoCasco, "mm", 0)}</Text>
                 </View>
                 <View style={styles.row}>
-                  <Text style={styles.rowLabel}>PMTA:</Text>
-                  <Text style={styles.rowValue}>{formatPMTA(dados.pmtaTubos)}</Text>
+                  <Text style={styles.rowLabel}>Altura / comprimento:</Text>
+                  <Text style={styles.rowValue}>{formatCampoNumerico(dados.alturaComprimentoCasco, "mm", 0)}</Text>
                 </View>
                 <View style={styles.row}>
-                  <Text style={styles.rowLabel}>Pressão de Projeto:</Text>
-                  <Text style={styles.rowValue}>{dados.pressaoProjetoTubos || "-"}</Text>
+                  <Text style={styles.rowLabel}>Pintura externa:</Text>
+                  <Text style={styles.rowValue}>{formatTexto(dados.pinturaExternaCasco)}</Text>
+                </View>
+                <View style={styles.row}>
+                  <Text style={styles.rowLabel}>Material:</Text>
+                  <Text style={styles.rowValue}>{formatTexto(dados.materialCasco)}</Text>
                 </View>
               </>
             )}
-          </View>
 
-          <Text style={styles.footer} render={({ pageNumber, totalPages }) => (
-            `Página ${pageNumber} de ${totalPages}`
-          )} fixed />
-        </Page>
-      )}
-
-      {/* PÁGINA 6: EXAME DA DOCUMENTAÇÃO */}
-      {(dados.prontuarioStatus || dados.registroSegurancaStatus) && (
-        <Page size="A4" style={styles.page} wrap={true}>
-          <PDFHeader numeroRelatorio={dados.numeroRelatorio} />
-          
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>6. EXAME DA DOCUMENTAÇÃO</Text>
+            <Text style={{ fontSize: 10, fontWeight: "bold", marginBottom: 6, marginTop: 12 }}>3. CLASSIFICAÇÃO - NR13 (SUBITEM 13.5.1.1.3)</Text>
             <View style={styles.row}>
-              <Text style={styles.rowLabel}>Prontuário:</Text>
-              <Text style={styles.rowValue}>{dados.prontuarioStatus || "-"}</Text>
+              <Text style={styles.rowLabel}>P.V (*):</Text>
+              <Text style={styles.rowValue}>{formatTexto(dados.tipoVasoSelecionado === "tubos" ? dados.pvTubos : dados.pvCasco)}</Text>
             </View>
             <View style={styles.row}>
-              <Text style={styles.rowLabel}>Registro de Segurança:</Text>
-              <Text style={styles.rowValue}>{dados.registroSegurancaStatus || "-"}</Text>
+              <Text style={styles.rowLabel}>Classe do fluído:</Text>
+              <Text style={styles.rowValue}>{formatTexto(dados.tipoVasoSelecionado === "tubos" ? dados.classeFluidoTubos : dados.classeFluidoCasco)}</Text>
             </View>
             <View style={styles.row}>
-              <Text style={styles.rowLabel}>Relatório Anterior:</Text>
-              <Text style={styles.rowValue}>{dados.relatorioAnteriorStatus || "-"}</Text>
+              <Text style={styles.rowLabel}>Grupo de risco:</Text>
+              <Text style={styles.rowValue}>{formatTexto(dados.tipoVasoSelecionado === "tubos" ? dados.grupoRiscoTubos : dados.grupoRiscoCasco)}</Text>
             </View>
             <View style={styles.row}>
-              <Text style={styles.rowLabel}>PAR:</Text>
-              <Text style={styles.rowValue}>{dados.parStatus || "-"}</Text>
+              <Text style={styles.rowLabel}>Categoria:</Text>
+              <Text style={styles.rowValue}>{formatTexto(dados.tipoVasoSelecionado === "tubos" ? dados.categoriaTubos : dados.categoriaCasco)}</Text>
             </View>
-            <View style={styles.row}>
-              <Text style={styles.rowLabel}>Certificado de Calibração:</Text>
-              <Text style={styles.rowValue}>{dados.certificadoCalibracaoStatus || "-"}</Text>
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.rowLabel}>Teste Hidrostático:</Text>
-              <Text style={styles.rowValue}>{dados.testeHidrostaticoStatus || "-"}</Text>
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.rowLabel}>Manual de Operação:</Text>
-              <Text style={styles.rowValue}>{dados.manualOperacaoStatus || "-"}</Text>
-            </View>
-          </View>
 
-          <Text style={styles.footer} render={({ pageNumber, totalPages }) => (
-            `Página ${pageNumber} de ${totalPages}`
-          )} fixed />
-        </Page>
-      )}
+            <Text style={{ fontSize: 10, fontWeight: "bold", marginBottom: 6, marginTop: 12 }}>4. CÓDIGO DE PROJETO</Text>
+            <Text style={styles.value}>{formatTexto(dados.codigoProjeto)}</Text>
 
-      {/* PÁGINA 7: RELATÓRIO ANTERIOR */}
-      {(dados.inspecaoPrazoStatus || dados.recomendacoesCumpridasStatus) && (
-        <Page size="A4" style={styles.page} wrap={true}>
-          <PDFHeader numeroRelatorio={dados.numeroRelatorio} />
-          
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>7. RELATÓRIO ANTERIOR</Text>
-            <View style={styles.row}>
-              <Text style={styles.rowLabel}>Inspeção dentro do prazo:</Text>
-              <Text style={styles.rowValue}>{dados.inspecaoPrazoStatus || "-"}</Text>
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.rowLabel}>Recomendações cumpridas:</Text>
-              <Text style={styles.rowValue}>{dados.recomendacoesCumpridasStatus || "-"}</Text>
-            </View>
-          </View>
-
-          <Text style={styles.footer} render={({ pageNumber, totalPages }) => (
-            `Página ${pageNumber} de ${totalPages}`
-          )} fixed />
-        </Page>
-      )}
-
-      {/* PÁGINA 8: INSTALAÇÕES */}
-      {(dados.acessoSeguroStatus || dados.requisitosVasoStatus) && (
-        <Page size="A4" style={styles.page} wrap={true}>
-          <PDFHeader numeroRelatorio={dados.numeroRelatorio} />
-          
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>8. INSTALAÇÕES</Text>
-            <View style={styles.row}>
-              <Text style={styles.rowLabel}>Acesso Seguro:</Text>
-              <Text style={styles.rowValue}>{dados.acessoSeguroStatus || "-"}</Text>
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.rowLabel}>Requisitos do Vaso:</Text>
-              <Text style={styles.rowValue}>{dados.requisitosVasoStatus || "-"}</Text>
-            </View>
-          </View>
-
-          <Text style={styles.footer} render={({ pageNumber, totalPages }) => (
-            `Página ${pageNumber} de ${totalPages}`
-          )} fixed />
-        </Page>
-      )}
-
-      {/* PÁGINA 9: EXAME EXTERNO */}
-      {(dados.placaIdentificacaoStatus || dados.adesivoPinturaStatus || dados.fotosExameExterno) && (
-        <Page size="A4" style={styles.page} wrap={true}>
-          <PDFHeader numeroRelatorio={dados.numeroRelatorio} />
-          
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>9. EXAME EXTERNO</Text>
-            <View style={styles.row}>
-              <Text style={styles.rowLabel}>Placa de Identificação:</Text>
-              <Text style={styles.rowValue}>{dados.placaIdentificacaoStatus || "-"}</Text>
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.rowLabel}>Adesivo/Pintura:</Text>
-              <Text style={styles.rowValue}>{dados.adesivoPinturaStatus || "-"}</Text>
-            </View>
-            {dados.observacoesFotos && (
-              <>
-                <Text style={styles.label}>Observações sobre Fotos:</Text>
-                <Text style={styles.value}>{dados.observacoesFotos}</Text>
-              </>
-            )}
-          </View>
-
-          <Text style={styles.footer} render={({ pageNumber, totalPages }) => (
-            `Página ${pageNumber} de ${totalPages}`
-          )} fixed />
-        </Page>
-      )}
-
-      {/* PÁGINA 10: EXAME INTERNO */}
-      {(dados.observacoesExameInterno91 || dados.observacoesExameInterno92) && (
-        <Page size="A4" style={styles.page} wrap={true}>
-          <PDFHeader numeroRelatorio={dados.numeroRelatorio} />
-          
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>10. EXAME INTERNO</Text>
-            {dados.observacoesExameInterno91 && (
-              <>
-                <Text style={styles.label}>9.1 Outros:</Text>
-                <Text style={styles.value}>{dados.observacoesExameInterno91}</Text>
-              </>
-            )}
-            {dados.observacoesExameInterno92 && (
-              <>
-                <Text style={styles.label}>9.2 Outros:</Text>
-                <Text style={styles.value}>{dados.observacoesExameInterno92}</Text>
-              </>
-            )}
-          </View>
-
-          <Text style={styles.footer} render={({ pageNumber, totalPages }) => (
-            `Página ${pageNumber} de ${totalPages}`
-          )} fixed />
-        </Page>
-      )}
-
-      {/* PÁGINA 11: ENSAIOS REALIZADOS */}
-      {(dados.ensaioMaterial || dados.testesPressaoFoiRealizado) && (
-        <Page size="A4" style={styles.page} wrap={true}>
-          <PDFHeader numeroRelatorio={dados.numeroRelatorio} />
-          
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>11. ENSAIOS REALIZADOS</Text>
-            {dados.ensaioMaterial && (
-              <>
-                <Text style={styles.label}>Material:</Text>
-                <Text style={styles.value}>{dados.ensaioMaterial}</Text>
-              </>
-            )}
-            {dados.ensaioAparelho && (
-              <>
-                <Text style={styles.label}>Aparelho:</Text>
-                <Text style={styles.value}>{dados.ensaioAparelho}</Text>
-              </>
-            )}
-            {dados.testesPressaoFoiRealizado && (
-              <>
-                <Text style={styles.label}>Teste de Pressão Realizado:</Text>
-                <Text style={styles.value}>{dados.testesPressaoFoiRealizado}</Text>
-              </>
-            )}
-            {dados.testesPressaoObservacoes && (
-              <>
-                <Text style={styles.label}>Observações:</Text>
-                <Text style={styles.value}>{dados.testesPressaoObservacoes}</Text>
-              </>
-            )}
-          </View>
-
-          <Text style={styles.footer} render={({ pageNumber, totalPages }) => (
-            `Página ${pageNumber} de ${totalPages}`
-          )} fixed />
-        </Page>
-      )}
-
-      {/* PÁGINA 12: RECOMENDAÇÕES */}
-      {dados.recomendacoes && (
-        <Page size="A4" style={styles.page} wrap={true}>
-          <PDFHeader numeroRelatorio={dados.numeroRelatorio} />
-          
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>12. RECOMENDAÇÕES</Text>
-            <Text style={styles.value}>{dados.recomendacoes}</Text>
-          </View>
-
-          <Text style={styles.footer} render={({ pageNumber, totalPages }) => (
-            `Página ${pageNumber} de ${totalPages}`
-          )} fixed />
-        </Page>
-      )}
-
-      {/* PÁGINA 13: CONCLUSÃO */}
-      {(dados.conclusaoStatus || dados.conclusaoDescricao) && (
-        <Page size="A4" style={styles.page} wrap={true}>
-          <PDFHeader numeroRelatorio={dados.numeroRelatorio} />
-          
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>13. CONCLUSÃO</Text>
-            {dados.conclusaoStatus && (
-              <>
-                <Text style={styles.label}>Status:</Text>
-                <Text style={styles.value}>{dados.conclusaoStatus}</Text>
-              </>
-            )}
-            {dados.conclusaoPmta && (
-              <>
-                <Text style={styles.label}>PMTA a ser adotada:</Text>
-                <Text style={styles.value}>{formatPMTA(dados.conclusaoPmta)}</Text>
-              </>
-            )}
-            {dados.conclusaoDescricao && (
-              <>
-                <Text style={styles.label}>Descrição:</Text>
-                <View style={styles.termoText}>
-                  {dados.conclusaoDescricao.split('\n').map((line, index) => {
-                    const processed = processBoldText(line);
-                    if (processed.length === 0) return null;
-                    
-                    return (
-                      <Text key={index} style={{ marginBottom: 5 }}>
-                        {processed.map((item) => {
-                          if (item.type === 'bold') {
-                            return <Text key={item.key} style={{ fontWeight: 'bold' }}>{item.text}</Text>;
-                          }
-                          return item.text;
-                        })}
-                      </Text>
-                    );
-                  })}
-                </View>
-              </>
-            )}
-          </View>
-
-          <Text style={styles.footer} render={({ pageNumber, totalPages }) => (
-            `Página ${pageNumber} de ${totalPages}`
-          )} fixed />
-        </Page>
-      )}
-
-      {/* PÁGINA 14: PRÓXIMAS INSPEÇÕES */}
-      {(dados.proximaInspecaoExameExterno || dados.proximaInspecaoExameInterno) && (
-        <Page size="A4" style={styles.page} wrap={true}>
-          <PDFHeader numeroRelatorio={dados.numeroRelatorio} />
-          
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>14. PRÓXIMAS INSPEÇÕES</Text>
-            {dados.proximaInspecaoExameExterno && (
-              <>
-                <Text style={styles.label}>Próxima Inspeção - Exame Externo:</Text>
-                <Text style={styles.value}>{dados.proximaInspecaoExameExterno}</Text>
-              </>
-            )}
-            {dados.proximaInspecaoExameInterno && (
-              <>
-                <Text style={styles.label}>Próxima Inspeção - Exame Interno:</Text>
-                <Text style={styles.value}>{dados.proximaInspecaoExameInterno}</Text>
-              </>
-            )}
-          </View>
-
-          <Text style={styles.footer} render={({ pageNumber, totalPages }) => (
-            `Página ${pageNumber} de ${totalPages}`
-          )} fixed />
-        </Page>
-      )}
-
-      {/* PÁGINA 15: ANEXOS */}
-      {(dados.anexo1Files || dados.anexo2Files || dados.anexo3Files) && (
-        <Page size="A4" style={styles.page} wrap={true}>
-          <PDFHeader numeroRelatorio={dados.numeroRelatorio} />
-          
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>15. ANEXOS</Text>
-            {dados.anexosData && (
-              <>
-                <Text style={styles.label}>Data:</Text>
-                <Text style={styles.value}>{dados.anexosData}</Text>
-              </>
-            )}
-            {dados.anexosAssinatura && (
-              <>
-                <Text style={styles.label}>Assinatura:</Text>
-                <Text style={styles.value}>{dados.anexosAssinatura}</Text>
-              </>
-            )}
-            <Text style={styles.value}>
-              {dados.anexo1Files && `Anexo 1: ${Array.isArray(dados.anexo1Files) ? dados.anexo1Files.length : 1} arquivo(s)\n`}
-              {dados.anexo2Files && `Anexo 2: ${Array.isArray(dados.anexo2Files) ? dados.anexo2Files.length : 1} arquivo(s)\n`}
-              {dados.anexo3Files && `Anexo 3: ${Array.isArray(dados.anexo3Files) ? dados.anexo3Files.length : 1} arquivo(s)`}
+            <Text style={{ fontSize: 8, color: "#666", marginTop: 10, fontStyle: "italic" }}>
+              (*) A identificação do grupo potencial de risco é realizada entre o produto da pressão de operação e o volume; P (Mpa) x V (m³).
             </Text>
           </View>
 
@@ -888,64 +739,7 @@ export const RelatorioPDF = ({ dados }) => {
         </Page>
       )}
 
-      {/* PÁGINA 16: TERMO DE INSPEÇÃO */}
-      {dados.termoTexto && (
-        <Page size="A4" style={styles.page} wrap={true}>
-          <PDFHeader numeroRelatorio={dados.numeroRelatorio} />
-          
-          <View style={styles.termoSection}>
-            <Text style={styles.termoTitle}>16. TERMO DE INSPEÇÃO</Text>
-            
-            <View style={styles.termoText}>
-              {dados.termoTexto.split('\n').map((line, index) => {
-                const processed = processBoldText(line);
-                if (processed.length === 0) return null;
-                
-                return (
-                  <Text key={index} style={{ marginBottom: 5 }}>
-                    {processed.map((item) => {
-                      if (item.type === 'bold') {
-                        return <Text key={item.key} style={{ fontWeight: 'bold' }}>{item.text}</Text>;
-                      }
-                      return item.text;
-                    })}
-                  </Text>
-                );
-              })}
-            </View>
-            
-            {/* Data e Local */}
-            <Text style={{ fontSize: 10, textAlign: "right", marginTop: 15 }}>
-              {formatTermoDateFull(dados.termoData || dados.dataFim, dados.termoLocal)}
-            </Text>
-            
-            {/* Assinatura */}
-            <View style={styles.termoSignature}>
-              {dados.termoImagem && (
-                <Image 
-                  src={dados.termoImagem} 
-                  style={{ width: 150, height: 80, marginBottom: 10, objectFit: 'contain' }}
-                />
-              )}
-              <View style={{ borderTopWidth: 1, borderTopStyle: "solid", borderTopColor: "#000", paddingTop: 5, marginTop: dados.termoImagem ? 0 : 30 }}>
-                <Text style={styles.termoSignatureName}>
-                  {dados.termoEngenheiroNome || dados.plhNome || ""}
-                </Text>
-                <Text style={styles.termoSignatureTitle}>
-                  {dados.termoEngenheiroTitulo || dados.plhTituloProfissional || ""}
-                </Text>
-                <Text style={styles.termoSignatureCrea}>
-                  CREA {dados.termoEngenheiroCrea || dados.plhCrea || ""}
-                </Text>
-              </View>
-            </View>
-          </View>
-
-          <Text style={styles.footer} render={({ pageNumber, totalPages }) => (
-            `Página ${pageNumber} de ${totalPages}`
-          )} fixed />
-        </Page>
-      )}
+      {/* Sumário e páginas do front */}
     </Document>
   );
 };

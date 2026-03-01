@@ -127,7 +127,6 @@ export default function InformacoesVaso({ formData, setFormData }) {
             </div>
 
             <div className="operational-data-single">
-              {/* Linha 1: Fluido, Volume informado e Pressão de projeto */}
               <div className="form-row-three">
                 <div className="form-group">
                   <label htmlFor="fluido">Fluido</label>
@@ -174,8 +173,9 @@ export default function InformacoesVaso({ formData, setFormData }) {
                 </div>
               </div>
 
-              {/* Linha 2: PMTA, Limitada (PMTA), P.M.E.A e Limitada (PMEA) */}
-              <div className="form-row-four">
+              <div className="vaso-field-group">
+                <div className="vaso-field-group-title">Pressões Máximas</div>
+                <div className="form-row-four">
                 <div className="form-group">
                   <label htmlFor="pmta">P.M.T.A</label>
                   <div className="input-with-unit">
@@ -192,9 +192,10 @@ export default function InformacoesVaso({ formData, setFormData }) {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="limitada">Limitada</label>
+                  <label htmlFor="limitada">Limitada (P.M.T.A)</label>
                   <select
                     id="limitada"
+                    className="vaso-select"
                     name={getFieldName("limitada")}
                     value={getFieldValue("limitada")}
                     onChange={handleChange}
@@ -223,9 +224,10 @@ export default function InformacoesVaso({ formData, setFormData }) {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="limitadaPmea">Limitada</label>
+                  <label htmlFor="limitadaPmea">Limitada (P.M.E.A)</label>
                   <select
                     id="limitadaPmea"
+                    className="vaso-select"
                     name={getFieldName("limitadaPmea")}
                     value={getFieldValue("limitadaPmea")}
                     onChange={handleChange}
@@ -237,9 +239,11 @@ export default function InformacoesVaso({ formData, setFormData }) {
                   </select>
                 </div>
               </div>
+              </div>
 
-              {/* Linha 3: Pressão de operação e Pressão de teste */}
-              <div className="form-row">
+              <div className="vaso-field-group">
+                <div className="vaso-field-group-title">Pressões de Operação</div>
+                <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="pressaoOperacao">Pressão de operação</label>
                   <div className="input-with-unit">
@@ -270,9 +274,11 @@ export default function InformacoesVaso({ formData, setFormData }) {
                   </div>
                 </div>
               </div>
+              </div>
 
-              {/* Linha 4: Temperatura de projeto e Temperatura de operação */}
-              <div className="form-row">
+              <div className="vaso-field-group">
+                <div className="vaso-field-group-title">Temperaturas</div>
+                <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="temperaturaProjeto">Temperatura de projeto</label>
                   <div className="input-with-unit">
@@ -305,6 +311,7 @@ export default function InformacoesVaso({ formData, setFormData }) {
               </div>
             </div>
           </div>
+        </div>
         )}
 
         {/* 2. CARACTERÍSTICAS CONSTRUTIVAS */}
@@ -507,7 +514,7 @@ export default function InformacoesVaso({ formData, setFormData }) {
         )}
 
         {/* 4. CÓDIGO DE PROJETO */}
-        <div className="form-section-divider">
+        <div className="vaso-codigo-secao form-section-divider">
           <h3>4. CÓDIGO DE PROJETO</h3>
         </div>
 
