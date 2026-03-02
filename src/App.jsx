@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { validateDateNotFuture } from "./utils/validations";
 import Login from "./components/Login";
+import Logo from "./components/Logo";
 import TabsMenu from "./components/TabsMenu";
 import TabContent from "./components/TabContent";
 import Toast from "./components/Toast";
@@ -9,6 +10,10 @@ import { RelatorioPDF } from "./pdf/RelatorioPDF";
 // import { debounce } from "./utils/debounce"; // Não usado no momento
 import "./App.css";
 import "./styles/tabs.css";
+
+// 🥚 Easter egg — marca registrada (Ctrl+Shift+E para revelar)
+const NOME_DO_SISTEMA = "Sistema NR-13 — Relatório Técnico Vasos sob Pressão";
+const EASTER_EGG_SIGNATURE = "JENAFREE";
 
 function App() {
   const [autenticado, setAutenticado] = useState(() => {
@@ -317,6 +322,18 @@ function App() {
     setToast({ message, type });
   };
 
+  // Easter egg: Ctrl+Shift+E — marca registrada
+  useEffect(() => {
+    const handleEasterEgg = (e) => {
+      if (e.ctrlKey && e.shiftKey && e.key?.toLowerCase() === "e") {
+        e.preventDefault();
+        showToast(`🥚 ${NOME_DO_SISTEMA} — Marca registrada: ${EASTER_EGG_SIGNATURE}`, "success");
+      }
+    };
+    window.addEventListener("keydown", handleEasterEgg);
+    return () => window.removeEventListener("keydown", handleEasterEgg);
+  }, []);
+
   // Progresso só considera as 4 etapas do fluxo (Resumo, Contratante, Responsabilidades, Informações do Vaso)
   // para que 100% seja alcançável ao preencher só essas etapas.
   const CAMPOS_CASCO = ["fluidoCasco", "volumeInformadoCasco", "pressaoProjetoCasco", "pmtaCasco", "limitadaCasco", "pmeaCasco", "limitadaPmeaCasco", "pressaoOperacaoCasco", "pressaoTesteCasco", "temperaturaProjetoCasco", "temperaturaOperacaoCasco", "diametroInternoCasco", "alturaComprimentoCasco", "pinturaExternaCasco", "materialCasco", "pvCasco", "classeFluidoCasco", "grupoRiscoCasco", "categoriaCasco"];
@@ -356,11 +373,7 @@ function App() {
       <header className="app-header">
         <div className="header-top">
           <div className="logo-container">
-            <img 
-              src="/logo-souza-aquino.svg" 
-              alt="Souza e Aquino Logo" 
-              className="logo-image"
-            />
+            <Logo />
           </div>
           <div className="header-main">
             <div className="header-titles">
